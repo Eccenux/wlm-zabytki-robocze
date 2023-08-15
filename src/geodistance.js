@@ -37,3 +37,14 @@ let lon1=19.1697712131415;
 
 dist({latFun:(i)=>1/10**i, lonFun:()=>0});
 dist({latFun:()=>0, lonFun:(i)=>1/10**i});
+
+// check reduction of both
+const reduceAccuracy = (d) => d.toFixed(5);
+let lat2 = reduceAccuracy(lat1);
+let lon2 = reduceAccuracy(lon1);
+console.log('before: %f => after: %f', lat1, lat2);
+console.log('before: %f => after: %f', lon1, lon2);
+
+let distance = GeoCalc.distanceWithHaversine(lat1, lon1, lat2, lon2);
+let {j, d} = format(distance);
+console.log("%s %s", d, j);
