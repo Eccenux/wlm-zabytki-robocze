@@ -15,7 +15,7 @@
  *   <li>MIT License: http://www.opensource.org/licenses/mit-license
  *   <li>or CC-BY: http://creativecommons.org/licenses/by/3.0/
  */
-function GeoCalc() {
+export function GeoCalc() {
 }
 
 /**
