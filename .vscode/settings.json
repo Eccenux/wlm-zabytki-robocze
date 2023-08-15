@@ -1,0 +1,6 @@
+{
+	"search.exclude": {
+		"*.lnk": true,
+		"package-lock.json": true
+	}
+}

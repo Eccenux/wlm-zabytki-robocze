@@ -1,0 +1,21 @@
+{
+  "name": "wlm-zabytki-robocze",
+  "version": "0.0.1",
+  "description": "Robocze do konkursu WLM i WLZ, w tym do obliczeń odległości geograficznych",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wlm",
+    "wikipedia",
+    "zabytki",
+    "geolocation"
+  ],
+  "author": "Maciej Nux",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.47.0"
+  }
+}
