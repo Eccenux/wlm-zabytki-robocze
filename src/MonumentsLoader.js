@@ -16,7 +16,7 @@ export class MonumentsLoader {
 	/**
 	 * Load many in boundaries.
 	 */
-	async loadMany(boundaries, max = 2) {
+	async loadMany(boundaries, max = 3) {
 		let lon1 = boundaries.southWest.lng;
 		let limiter = () => false;
 		if (max > 0) {
@@ -29,13 +29,20 @@ export class MonumentsLoader {
 			}
 		}
 		const step = 0.005;
+		let steps = 0;
 		for (let lon2 = lon1 + step; lon2 < boundaries.northEast.lng; lon2 += step) {
-			let re = await this.load(lon1, lon2);
-			console.log('Saving %d records (%f, %f).', re.length, lon1, lon2);
+			steps++;
+			// let re = await this.load(lon1, lon2);
+			let re = [];
+			const digits = 4;
+			console.log('Saving %d records (%f, %f).', re.length, downAccuracy(lon1, digits), ceilAccuracy(lon2, digits));
+			// TODO: save
 			if (limiter()) {
 				break;
 			}
+			lon1 = lon2;
 		}
+		console.log('Done in %d steps', steps);
 	}
 
 	/**
