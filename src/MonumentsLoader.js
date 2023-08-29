@@ -12,6 +12,32 @@ export class MonumentsLoader {
 		this.lat1 = downAccuracy(lat1, 2);
 		this.lat2 = ceilAccuracy(lat2, 2);
 	}
+
+	/**
+	 * Load many in boundaries.
+	 */
+	async loadMany(boundaries, max = 2) {
+		let lon1 = boundaries.southWest.lng;
+		let limiter = () => false;
+		if (max > 0) {
+			limiter = () => {
+				max--;
+				if (max <= 0) {
+					return true;
+				}
+				return false;
+			}
+		}
+		const step = 0.005;
+		for (let lon2 = lon1 + step; lon2 < boundaries.northEast.lng; lon2 += step) {
+			let re = await this.load(lon1, lon2);
+			console.log('Saving %d records (%f, %f).', re.length, lon1, lon2);
+			if (limiter()) {
+				break;
+			}
+		}
+	}
+
 	/**
 	 * Load monuments in range.
 	 * @param lon1raw Start (smaller)
@@ -61,11 +87,11 @@ export class MonumentsLoader {
 
 	static entityUriRe = /.+\/Q/;
 	static entityUriToQ(property) {
-		return property.value.replace(this.entityUriRe, 'Q');
+		return property?.value.replace(this.entityUriRe, 'Q');
 	}
 	static coordsTransform(property) {
 		let lat, lon;
-		property.value.replace(/Point\s*\(([0-9.]+) ([0-9.]+)\)/, (a, x, y) => {
+		property?.value.replace(/Point\s*\(([0-9.]+) ([0-9.]+)\)/, (a, x, y) => {
 			lon = x;
 			lat = y;
 		});
