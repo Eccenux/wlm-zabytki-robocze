@@ -1,11 +1,11 @@
 {
   "name": "wlm-zabytki-robocze",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Robocze do konkursu WLM i WLZ, w tym do obliczeń odległości geograficznych",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "keywords": [
     "wlm",
@@ -16,6 +16,8 @@
   "author": "Maciej Nux",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^8.47.0"
+    "chai": "4.x",
+    "eslint": "8.x",
+    "mocha": "10.x"
   }
 }

@@ -7,11 +7,20 @@
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "Launch Program",
+			"name": "Run geodistance.js",
 			"skipFiles": [
 				"<node_internals>/**"
 			],
 			"program": "${workspaceFolder}\\src\\geodistance.js"
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Run download_pl.js",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"program": "${workspaceFolder}\\src\\download_pl.js"
 		}
 	]
 }
