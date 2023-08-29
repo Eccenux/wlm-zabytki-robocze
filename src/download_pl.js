@@ -5,7 +5,10 @@
 import { MonumentsLoader } from "./MonumentsLoader.js";
 
 /*
-	Polska. 
+	Polska.
+
+	Test:
+	https://w.wiki/7M9G
 */
 const boundaries = {
 	"southWest":{"lng":13.863917, "lat":48.487486}, 

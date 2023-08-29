@@ -5,7 +5,7 @@ import { MonumentsLoader } from "../src/MonumentsLoader.js";
 describe('MonumentsLoader', () => {
 	describe('recordTransform', () => {
 		let result;
-		it('transform', () => {
+		it('transform full', () => {
 			let record = {
 				category: {type: 'literal', value: 'Carl-Maria-von-Weber-Museum'},
 				coord:    {datatype: 'http://www.opengis.net/ont/geosparql#wktLiteral', type: 'literal', value: 'Point(13.8645 51.0168)'},
@@ -23,6 +23,29 @@ describe('MonumentsLoader', () => {
 				image:    'http://commons.wikimedia.org/wiki/Special:FilePath/Carlmariavonwebermuseum%20dresden2.jpg',
 				item:     'Q1036560',
 				town:     'Q1731',
+			};
+
+			result = MonumentsLoader.recordTransform(record)
+			assert.deepEqual(result, expected);
+		});
+		it('transform none', () => {
+			let record = {
+				category: {},
+				coord:    {},
+				itemLabel:{},
+				townLabel:{},
+				image:    {},
+				item:     {},
+				town:     {},
+			};
+			let expected = {
+				category: undefined,
+				coord:    {lon:undefined, lat:undefined},
+				itemLabel:undefined,
+				townLabel:undefined,
+				image:    undefined,
+				item:     undefined,
+				town:     undefined,
 			};
 
 			result = MonumentsLoader.recordTransform(record)

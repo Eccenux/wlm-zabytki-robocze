@@ -87,14 +87,20 @@ export class MonumentsLoader {
 
 	static entityUriRe = /.+\/Q/;
 	static entityUriToQ(property) {
-		return property?.value.replace(this.entityUriRe, 'Q');
+		if (!property?.value) {
+			return undefined;
+		}
+		return property.value.replace(this.entityUriRe, 'Q');
 	}
 	static coordsTransform(property) {
 		let lat, lon;
-		property?.value.replace(/Point\s*\(([0-9.]+) ([0-9.]+)\)/, (a, x, y) => {
-			lon = x;
-			lat = y;
-		});
+		let value = property?.value;
+		if (value) {
+			value.replace(/Point\s*\(([0-9.]+) ([0-9.]+)\)/, (a, x, y) => {
+				lon = x;
+				lat = y;
+			});
+		}
 		return {lat, lon};
 	}
 
