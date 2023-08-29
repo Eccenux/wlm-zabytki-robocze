@@ -1,5 +1,6 @@
 import { downAccuracy, ceilAccuracy } from './MapHelpers.js';
-
+import fs from 'fs';
+import path from 'path';
 /**
  * Download monuments.
  */
@@ -30,19 +31,66 @@ export class MonumentsLoader {
 		}
 		const step = 0.005;
 		let steps = 0;
-		for (let lon2 = lon1 + step; lon2 < boundaries.northEast.lng; lon2 += step) {
+		const qids = new Set();
+		let total = 0;
+		for (let lon2 = lon1 + step; lon2 < boundaries.northEast.lng; lon1 = lon2, lon2 += step) {
 			steps++;
-			// let re = await this.load(lon1, lon2);
-			let re = [];
+			let re = await this.load(lon1, lon2);
 			const digits = 4;
-			console.log('Saving %d records (%f, %f).', re.length, downAccuracy(lon1, digits), ceilAccuracy(lon2, digits));
-			// TODO: save
+			const rangeInfo = `${downAccuracy(lon1, digits)}, ${ceilAccuracy(lon2, digits)}`
+			// let re = [];
+			if (!re.length) {
+				console.log('No records found (%s).', rangeInfo);
+				continue;
+			}
+			total += re.length;
+			console.log('Saving %d records (%s).', re.length, rangeInfo);
+			// remeber Qids
+			re.forEach((r)=>{
+				qids.add(r.item);
+			})
+			// save records
+			this.saveRecords(re, {lon1, lon2});
+			// optional limit
 			if (limiter()) {
 				break;
 			}
-			lon1 = lon2;
 		}
+		// save Qids
+		this.saveData(Array.from(qids), '_qids.json');
+		// summary
 		console.log('Done in %d steps', steps);
+		console.log('Total records: %d; Qids: %d.', total, qids.size);
+	}
+
+	/**
+	 * Save monument records.
+	 * @param {Array} re 
+	 * @param {Object} params 
+	 */
+	saveRecords(re, params) {
+		const mul = Math.pow(10, 4);
+		const trans = (l) => Math.floor(l*mul);
+		const name = `lon_${trans(params.lon1)}_${trans(params.lon2)}.json`;
+		this.saveData(re, name);
+	}
+
+	/**
+	 * Save data.
+	 * @param {Array|Object} data 
+	 * @param {Object} params 
+	 */
+	saveData(data, name) {
+		const outputDir = './output';
+		const outputFile = path.join(outputDir, name);
+
+		// Create the output directory if it doesn't exist
+		if (!fs.existsSync(outputDir)) {
+			fs.mkdirSync(outputDir);
+		}
+
+		// Write the data to the file
+		fs.writeFileSync(outputFile, JSON.stringify(data, null, '\t'));
 	}
 
 	/**
@@ -56,6 +104,7 @@ export class MonumentsLoader {
 		const lon1 = downAccuracy(lon1raw, 3);
 		const lon2 = ceilAccuracy(lon2raw, 3);
 
+		// Polska: ?item wdt:P17 wd:Q36 .
 		const query = `
 			SELECT ?item ?itemLabel ?town ?townLabel ?image ?coord ?category WHERE {
 				SERVICE wikibase:box {
@@ -67,6 +116,7 @@ export class MonumentsLoader {
 				OPTIONAL { ?item wdt:P625 ?coord. }
 				OPTIONAL { ?item wdt:P131 ?town. }
 				OPTIONAL { ?item wdt:P18 ?image. }
+				?item wdt:P17 wd:Q36 .
 				?item p:P1435 ?monument.
 				OPTIONAL { ?item wdt:P31 ?type. }
 				OPTIONAL { ?item wdt:P373 ?category. }

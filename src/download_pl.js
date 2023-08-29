@@ -11,10 +11,10 @@ import { MonumentsLoader } from "./MonumentsLoader.js";
 	https://w.wiki/7M9G
 */
 const boundaries = {
-	"southWest":{"lng":14.00645, "lat":48.87194},
+	"southWest":{"lng":14.09002, "lat":48.87194},
 	"northEast":{"lng":24.19078, "lat":54.88292},
 }
 
 const loader = new MonumentsLoader(boundaries.southWest.lat, boundaries.northEast.lat);
-loader.loadMany(boundaries);
-// loader.loadMany(boundaries, -1);
+// loader.loadMany(boundaries);
+loader.loadMany(boundaries, -1);
