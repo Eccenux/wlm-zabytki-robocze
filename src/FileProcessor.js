@@ -11,15 +11,21 @@ export default class FileProcessor {
 	async processFiles(directoryPath) {
 		const files = await this.readMatchingFiles(directoryPath);
 		let total = 0;
+		let skipped = 0;
 		for (const file of files) {
 			const items = await this.readJSONFromFile(directoryPath, file);
 			console.log(`${file}: ${items.length}`);
-			total += items.length;
 			for (const item of items) {
+				let count = await this.db.exists(item);
+				if (count > 0) {
+					skipped++;
+					continue;
+				}
+				total++;
 				this.db.insert(item);
 			}
 		}
-		console.log(`Total items: ${total} in files: ${files.length}.`);
+		console.log(`Total items: ${total}, skipped: ${skipped}; in files: ${files.length}.`);
 	}
 
 	/** @private Read JSON files list. */

@@ -6,6 +6,7 @@ export default class DbData {
 	constructor() {
 		this.initDone = false;
 	}
+	/** @private init */
 	init() {
 		// Initialize pg-promise
 		this.pgp = pgPromise();
@@ -14,7 +15,11 @@ export default class DbData {
 		// Done
 		this.initDone = true;
 	}
-	// Function to insert data into the database
+	/**
+	 * Insert WD data into the database.
+	 * @param {Object} data WD record.
+	 * @returns 
+	 */
 	async insert(data) {
 		if (this.initDone === false) {
 			this.init();
@@ -26,7 +31,29 @@ export default class DbData {
 		`;
 
 		const result = await this.db.one(query, data);
-		console.log(result, 'done');
+		// console.log(result, 'done');
 		return result;
+	}
+
+	/**
+	 * Check if record exists.
+	 * @param {Object} data WD record.
+	 * @returns count of records found.
+	 */
+	async exists(data) {
+		if (this.initDone === false) {
+			this.init();
+		}
+		const query = `
+			SELECT count(*) as num FROM wlz_dupl
+			WHERE 
+				item = $<item>
+				AND lat = cast($<coord.lat> as NUMERIC(11, 8))
+				AND lon = cast($<coord.lon> as NUMERIC(11, 8))
+			;
+		`;
+
+		const count = await this.db.one(query, data);
+		return parseInt(count.num, 10);
 	}
 }
