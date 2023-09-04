@@ -7,6 +7,15 @@
 		{
 			"type": "node",
 			"request": "launch",
+			"name": "Run dbInsert.js",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"program": "${workspaceFolder}\\src\\dbInsert.js"
+		},
+		{
+			"type": "node",
+			"request": "launch",
 			"name": "Run geodistance.js",
 			"skipFiles": [
 				"<node_internals>/**"

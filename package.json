@@ -19,5 +19,8 @@
     "chai": "4.x",
     "eslint": "8.x",
     "mocha": "10.x"
+  },
+  "dependencies": {
+    "pg-promise": "^11.5.4"
   }
 }
