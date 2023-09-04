@@ -30,9 +30,20 @@ export default class DbData {
 			RETURNING id;
 		`;
 
+		this.coordTransform(data);	// floor coord (unify)
 		const result = await this.db.one(query, data);
 		// console.log(result, 'done');
 		return result;
+	}
+
+	/** @private */
+	coordTransform(data) {
+		data.coord.lon = this.trimSingleCoord(data.coord.lon);
+		data.coord.lat = this.trimSingleCoord(data.coord.lat);
+	}
+	/** @private */
+	trimSingleCoord(ll) {
+		return ll.replace(/(\.\d{8})\d+/, '$1');
 	}
 
 	/**
@@ -53,6 +64,7 @@ export default class DbData {
 			;
 		`;
 
+		this.coordTransform(data);	// floor coord (unify)
 		const count = await this.db.one(query, data);
 		return parseInt(count.num, 10);
 	}
