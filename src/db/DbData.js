@@ -43,7 +43,7 @@ export default class DbData {
 			"itemLabel": dump?.itemLabel ?? '',
 			"townLabel": dump?.townLabel ?? '',
 			"item": dump.item.replace('Q',''),
-			"town": (dump?.town ?? '').replace('Q',''),
+			"town": (dump?.town ?? '-1').replace('Q',''),
 		}
 
 		this.coordTransform(data);	// floor coord (unify for select)
