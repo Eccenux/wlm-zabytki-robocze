@@ -3,7 +3,7 @@ ORDER BY id ASC
 ;
 
 SELECT * FROM public.wlz_dupl
-where item = 'Q11690917'
+where item = 11690917
 and "lat" = 52.87475
 and "lon" = 14.203194
 ORDER BY id ASC;
@@ -14,14 +14,14 @@ order by 1 desc
 ;
 
 SELECT * FROM public.wlz_dupl
-where item = 'Q11690917'
+where item = 11690917
 ;
 
 SELECT * FROM public.wlz_dupl
 WHERE item in (
 SELECT item FROM public.wlz_dupl
 group BY item
-having count(*) > 3
+having count(*) > 1
 )
 
 ;

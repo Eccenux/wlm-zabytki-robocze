@@ -16,13 +16,12 @@ export default class FileProcessor {
 			const items = await this.readJSONFromFile(directoryPath, file);
 			console.log(`${file}: ${items.length}`);
 			for (const item of items) {
-				let count = await this.db.exists(item);
-				if (count > 0) {
+				const result = await this.db.insert(item);
+				if (result === false) {
 					skipped++;
-					continue;
+				} else {
+					total++;
 				}
-				total++;
-				this.db.insert(item);
 			}
 		}
 		console.log(`Total items: ${total}, skipped: ${skipped}; in files: ${files.length}.`);

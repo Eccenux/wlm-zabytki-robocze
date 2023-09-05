@@ -1,10 +1,13 @@
 // Node v14-18; Postgres v10-15.
 import pgPromise from "pg-promise";
 import dbConfig from "./dbConfig.priv.js";
+import Log from "../Log.js";
 
 export default class DbData {
 	constructor() {
 		this.initDone = false;
+		const dt = new Date().toISOString().replace(/:/g, '.');
+		this.log = new Log(`./output/${dt}--dbdata.log`);
 	}
 	/** @private init */
 	init() {
@@ -27,6 +30,7 @@ export default class DbData {
 		const query = `
 			INSERT INTO wlz_dupl (lat, lon, itemLabel, townLabel, item, town)
 			VALUES ($<coord.lat>, $<coord.lon>, $<itemLabel>, $<townLabel>, $<item>, $<town>)
+			ON CONFLICT DO NOTHING
 			RETURNING id;
 		`;
 
@@ -38,12 +42,23 @@ export default class DbData {
 			},
 			"itemLabel": dump?.itemLabel ?? '',
 			"townLabel": dump?.townLabel ?? '',
-			"item": dump?.item,
-			"town": dump?.town,
+			"item": dump.item.replace('Q',''),
+			"town": (dump?.town ?? '').replace('Q',''),
 		}
 
 		this.coordTransform(data);	// floor coord (unify for select)
-		const result = await this.db.one(query, data);
+		let result;
+		try {
+			result = await this.db.one(query, data);
+		} catch (error) {
+			if (!error.message.startsWith('No data')) {
+				const info = `[ERROR] Failed insert of Q${data.item} (${data.coord.lat}, ${data.coord.lon}), ${data.itemLabel}:`;
+				console.error(info);
+				this.log.log(info);
+				this.log.log(error.toString());
+			}
+			result = false;
+		}
 		// console.log(result, 'done');
 		return result;
 	}
@@ -60,10 +75,10 @@ export default class DbData {
 
 	/**
 	 * Check if record exists.
-	 * @param {Object} data WD record.
+	 * @param {Object} dump WD record.
 	 * @returns count of records found.
 	 */
-	async exists(data) {
+	async exists(dump) {
 		if (this.initDone === false) {
 			this.init();
 		}
@@ -76,6 +91,13 @@ export default class DbData {
 			;
 		`;
 
+		const data = {
+			"coord": {
+				"lat": dump?.coord?.lat,
+				"lon": dump?.coord?.lon,
+			},
+			"item": dump.item.replace('Q',''),
+		}
 		this.coordTransform(data);	// floor coord (unify)
 		const count = await this.db.one(query, data);
 		return parseInt(count.num, 10);
