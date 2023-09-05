@@ -17,6 +17,16 @@ SELECT * FROM public.wlz_dupl
 where item = 'Q11690917'
 ;
 
+SELECT * FROM public.wlz_dupl
+WHERE item in (
+SELECT item FROM public.wlz_dupl
+group BY item
+having count(*) > 3
+)
+
+;
+
+
 /*
 SELECT *
 , lon

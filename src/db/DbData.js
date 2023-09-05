@@ -17,10 +17,10 @@ export default class DbData {
 	}
 	/**
 	 * Insert WD data into the database.
-	 * @param {Object} data WD record.
+	 * @param {Object} dump WD record.
 	 * @returns 
 	 */
-	async insert(data) {
+	async insert(dump) {
 		if (this.initDone === false) {
 			this.init();
 		}
@@ -30,7 +30,19 @@ export default class DbData {
 			RETURNING id;
 		`;
 
-		this.coordTransform(data);	// floor coord (unify)
+		// clone and unify
+		const data = {
+			"coord": {
+				"lat": dump?.coord?.lat,
+				"lon": dump?.coord?.lon,
+			},
+			"itemLabel": dump?.itemLabel ?? '',
+			"townLabel": dump?.townLabel ?? '',
+			"item": dump?.item,
+			"town": dump?.town,
+		}
+
+		this.coordTransform(data);	// floor coord (unify for select)
 		const result = await this.db.one(query, data);
 		// console.log(result, 'done');
 		return result;
