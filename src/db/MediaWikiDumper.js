@@ -28,7 +28,7 @@ from (
 group by lat_, lon_
 having count(distinct item) > 2
 order by licznik desc
-limit 20
+limit 50
 `;
 
 /**
@@ -76,7 +76,7 @@ export default class MediaWikiDumper {
 
 	/** @private */
 	formatAsMediaWikiTable(rows) {
-		let table = '{| class="wikitable topalign"\n';
+		let table = '{| class="topalign"\n';
 		const headers = Object.keys(rows[0]);
 		table += '! ' + headers.join(' !! ') + '\n';
 
