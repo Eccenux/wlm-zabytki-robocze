@@ -112,6 +112,7 @@ export class MonumentsLoader {
 				SELECT ?item ?itemLabel 
 					(GROUP_CONCAT(DISTINCT ?typeLabel; SEPARATOR=", ") AS ?types)
 					(GROUP_CONCAT(DISTINCT ?inspireId; SEPARATOR=", ") AS ?inspireIds)
+					(GROUP_CONCAT(DISTINCT ?monumentLabel; SEPARATOR=", ") AS ?monumentStatus)
 					?town ?townLabel 
 					?state ?stateLabel 
 					?coord
@@ -130,7 +131,7 @@ export class MonumentsLoader {
 						FILTER EXISTS { ?state wdt:P31 wd:Q150093 }
 					}
 					FILTER EXISTS { ?item wdt:P17 wd:Q36 . }
-					FILTER EXISTS { ?item p:P1435 ?monument }
+					?item wdt:P1435 ?monument
 					OPTIONAL { ?item wdt:P31 ?type. }
 					OPTIONAL { ?item wdt:P373 ?category. }
 					OPTIONAL { ?item wdt:P4115 ?inspireId. }
@@ -139,6 +140,7 @@ export class MonumentsLoader {
 						?item rdfs:label ?itemLabel .
 						?town rdfs:label ?townLabel .
 						?state rdfs:label ?stateLabel .
+						?monument rdfs:label ?monumentLabel .
 						?type rdfs:label ?typeLabel .
 					}
 				}
@@ -185,13 +187,16 @@ export class MonumentsLoader {
 	/** API record to lite record. */
 	static recordTransform(r) {
 		return {
-			category : r?.category?.value,
 			coord : this.coordsTransform(r.coord),
-			itemLabel : r?.itemLabel?.value,
-			townLabel : r?.townLabel?.value,
-			image : r?.image?.value,
 			item : this.entityUriToQ(r.item),
+			itemLabel : r?.itemLabel?.value,
+			types : r?.types?.value,
+			inspireIds : r?.inspireIds?.value,
+			monumentStatus : r?.monumentStatus?.value,
 			town : this.entityUriToQ(r.town),
+			townLabel : r?.townLabel?.value,
+			state : this.entityUriToQ(r.state),
+			stateLabel : r?.stateLabel?.value,
 		};
 	}
 
