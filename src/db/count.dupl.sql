@@ -2,13 +2,13 @@
 	Liczba duplikatów zależnie od stopnia zaokrąglenia współrzędnych.
 
 	accuracy = liczba miejsc po przecinku
+
+	Results:
+	6	4287
+	5	4365
+	4	6004
+	3	16736
 */
-
--- 11,6 -> 4300
--- 11,5 -> 4369
--- 11,4 -> 5999
--- 11,3 -> 16657
-
 select '3' as accuracy, count(*)
 from (
 	select 1 from (

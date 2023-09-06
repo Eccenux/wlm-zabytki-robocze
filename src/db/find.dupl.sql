@@ -1,4 +1,3 @@
--- 4300 dla l6
 -- ~550 dla więcej niż 3 obok siebie
 /**/
 select concat(lat_, ':' , lon_, ':20')

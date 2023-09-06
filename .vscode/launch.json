@@ -16,6 +16,15 @@
 		{
 			"type": "node",
 			"request": "launch",
+			"name": "Run dbExportMw.js",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"program": "${workspaceFolder}\\src\\dbExportMw.js"
+		},
+		{
+			"type": "node",
+			"request": "launch",
 			"name": "Run geodistance.js",
 			"skipFiles": [
 				"<node_internals>/**"

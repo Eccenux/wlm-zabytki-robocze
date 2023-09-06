@@ -3,3 +3,4 @@ node_modules
 output/*
 *.priv.*
 *.priv
+output.wiki
