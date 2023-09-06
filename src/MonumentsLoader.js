@@ -111,10 +111,10 @@ export class MonumentsLoader {
 		const query = `
 				SELECT ?item ?itemLabel 
 					(GROUP_CONCAT(DISTINCT ?typeLabel; SEPARATOR=", ") AS ?types)
+					(GROUP_CONCAT(DISTINCT ?inspireId; SEPARATOR=", ") AS ?inspireIds)
 					?town ?townLabel 
 					?state ?stateLabel 
 					?coord
-					?category
 				WHERE {
 					SERVICE wikibase:box {
 						?item wdt:P625 ?coord. hint:Prior hint:rangeSafe true.
@@ -133,6 +133,7 @@ export class MonumentsLoader {
 					FILTER EXISTS { ?item p:P1435 ?monument }
 					OPTIONAL { ?item wdt:P31 ?type. }
 					OPTIONAL { ?item wdt:P373 ?category. }
+					OPTIONAL { ?item wdt:P4115 ?inspireId. }
 					SERVICE wikibase:label { 
 						bd:serviceParam wikibase:language "pl,en". 
 						?item rdfs:label ?itemLabel .
@@ -141,7 +142,7 @@ export class MonumentsLoader {
 						?type rdfs:label ?typeLabel .
 					}
 				}
-				GROUP BY ?item ?itemLabel ?town ?townLabel ?state ?stateLabel ?coord ?category
+				GROUP BY ?item ?itemLabel ?town ?townLabel ?state ?stateLabel ?coord
 		`;
 		// return Promise.resolve(query);
 
