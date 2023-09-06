@@ -7,13 +7,12 @@ import fs from 'fs';
 // Define the SQL query
 // const sqlQuery = fs.readFileSync('./src/db/find.dupl.sql');
 const sqlQuery = `
-select concat(lat_, ':' , lon_, ':20')
-	--, count(*) as cntAll
+select concat(lat_, ':' , lon_) as latlon
 	, max(townLabel) as miasto
 	, max(stateLabel) as woj
-	, count(distinct item) as cntQ
-	, array_to_string(array_agg(item ORDER BY item), '; ') as Qid
-	, array_to_string(array_agg(inspireIds ORDER BY item), '; ') as inspireId
+	, count(distinct item) as licznik
+	, array_to_string(array_agg(item ORDER BY item), '; ') as "Q (duplikaty lub złe współrzędne)"
+	, array_to_string(array_agg(inspireIds ORDER BY item), '; ') as "inspire id"
 	, array_to_string(array_agg(typeLabels ORDER BY item), '; ') as typy
 	, array_to_string(array_agg(monumentStatus ORDER BY item), '; ') as statusy
 from (
@@ -28,7 +27,7 @@ from (
 ) as t
 group by lat_, lon_
 having count(distinct item) > 2
-order by cntQ desc
+order by licznik desc
 limit 20
 `;
 
@@ -77,16 +76,27 @@ export default class MediaWikiDumper {
 
 	/** @private */
 	formatAsMediaWikiTable(rows) {
-		let table = '{| class="wikitable"\n';
+		let table = '{| class="wikitable topalign"\n';
 		const headers = Object.keys(rows[0]);
-		table += '| ' + headers.join(' || ') + ' |\n';
+		table += '! ' + headers.join(' !! ') + '\n';
 
 		for (const row of rows) {
-			const values = headers.map((header) => row[header]);
-			table += '| ' + values.join(' || ') + ' |\n';
+			const values = headers
+				.map((header) => {
+					if (header === 'latlon') {
+						const ll = row[header];
+						return `[https://zabytki.toolforge.org/#!?c=${ll}:20 ${ll}]`;
+					}
+					return row[header]
+						.split('; ')
+						.map(v=>v.length?v:'-')
+						.join('<br>')
+				})
+			;
+			table += '\n|-\n| ' + values.join('\n| ');
 		}
 
-		table += '|}\n';
+		table += '\n|}\n';
 		return table;
 	}
 }
