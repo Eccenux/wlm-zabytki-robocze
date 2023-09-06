@@ -117,7 +117,7 @@ export class MonumentsLoader {
 				OPTIONAL { ?item wdt:P131 ?town. }
 				OPTIONAL { ?item wdt:P18 ?image. }
 				?item wdt:P17 wd:Q36 .
-				?item p:P1435 ?monument.
+				FILTER EXISTS { ?item p:P1435 ?monument }
 				OPTIONAL { ?item wdt:P31 ?type. }
 				OPTIONAL { ?item wdt:P373 ?category. }
 				SERVICE wikibase:label { bd:serviceParam wikibase:language "pl,en". }
