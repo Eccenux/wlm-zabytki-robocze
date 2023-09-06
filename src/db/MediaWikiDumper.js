@@ -87,9 +87,18 @@ export default class MediaWikiDumper {
 						const ll = row[header];
 						return `[https://zabytki.toolforge.org/#!?c=${ll}:20 ${ll}]`;
 					}
+					const isQ = (header.startsWith('Q '));
 					return row[header]
 						.split('; ')
-						.map(v=>v.length?v:'-')
+						.map(v=>{
+							if (!v.length) {
+								return '-';
+							}
+							if (!isQ) {
+								return v;
+							}
+							return `[[wikidata:Q${v}|Q${v}]]`;
+						})
 						.join('<br>')
 				})
 			;
