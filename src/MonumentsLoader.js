@@ -105,10 +105,14 @@ export class MonumentsLoader {
 		const lon2 = ceilAccuracy(lon2raw, 3);
 
 		// Polska: ?item wdt:P17 wd:Q36 .
+		// Example range:
+		// wikibase:cornerWest "Point(14.19 52.87)"^^geo:wktLiteral;
+		// wikibase:cornerEast "Point(14.22 56.89)"^^geo:wktLiteral.
 		const query = `
 				SELECT ?item ?itemLabel 
 					(GROUP_CONCAT(DISTINCT ?typeLabel; SEPARATOR=", ") AS ?types)
 					?town ?townLabel 
+					?state ?stateLabel 
 					?coord
 					?category
 				WHERE {
@@ -120,7 +124,12 @@ export class MonumentsLoader {
 					}
 					OPTIONAL { ?item wdt:P625 ?coord. }
 					OPTIONAL { ?item wdt:P131 ?town. }
-					?item wdt:P17 wd:Q36 .
+					OPTIONAL { 
+						?item wdt:P131 ?town . 
+						?town (wdt:P131)* ?state .
+						FILTER EXISTS { ?state wdt:P31 wd:Q150093 }
+					}
+					FILTER EXISTS { ?item wdt:P17 wd:Q36 . }
 					FILTER EXISTS { ?item p:P1435 ?monument }
 					OPTIONAL { ?item wdt:P31 ?type. }
 					OPTIONAL { ?item wdt:P373 ?category. }
@@ -128,10 +137,11 @@ export class MonumentsLoader {
 						bd:serviceParam wikibase:language "pl,en". 
 						?item rdfs:label ?itemLabel .
 						?town rdfs:label ?townLabel .
+						?state rdfs:label ?stateLabel .
 						?type rdfs:label ?typeLabel .
 					}
 				}
-				GROUP BY ?item ?itemLabel ?town ?townLabel ?coord ?category
+				GROUP BY ?item ?itemLabel ?town ?townLabel ?state ?stateLabel ?coord ?category
 		`;
 		// return Promise.resolve(query);
 
