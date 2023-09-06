@@ -106,22 +106,32 @@ export class MonumentsLoader {
 
 		// Polska: ?item wdt:P17 wd:Q36 .
 		const query = `
-			SELECT ?item ?itemLabel ?town ?townLabel ?image ?coord ?category WHERE {
-				SERVICE wikibase:box {
-				?item wdt:P625 ?coord. hint:Prior hint:rangeSafe true.
-				bd:serviceParam 
-					wikibase:cornerWest "Point(${lon1} ${lat1})"^^geo:wktLiteral;
-					wikibase:cornerEast "Point(${lon2} ${lat2})"^^geo:wktLiteral.
+				SELECT ?item ?itemLabel 
+					(GROUP_CONCAT(DISTINCT ?typeLabel; SEPARATOR=", ") AS ?types)
+					?town ?townLabel 
+					?coord
+					?category
+				WHERE {
+					SERVICE wikibase:box {
+						?item wdt:P625 ?coord. hint:Prior hint:rangeSafe true.
+						bd:serviceParam 
+						wikibase:cornerWest "Point(${lon1} ${lat1})"^^geo:wktLiteral;
+						wikibase:cornerEast "Point(${lon2} ${lat2})"^^geo:wktLiteral.
+					}
+					OPTIONAL { ?item wdt:P625 ?coord. }
+					OPTIONAL { ?item wdt:P131 ?town. }
+					?item wdt:P17 wd:Q36 .
+					FILTER EXISTS { ?item p:P1435 ?monument }
+					OPTIONAL { ?item wdt:P31 ?type. }
+					OPTIONAL { ?item wdt:P373 ?category. }
+					SERVICE wikibase:label { 
+						bd:serviceParam wikibase:language "pl,en". 
+						?item rdfs:label ?itemLabel .
+						?town rdfs:label ?townLabel .
+						?type rdfs:label ?typeLabel .
+					}
 				}
-				OPTIONAL { ?item wdt:P625 ?coord. }
-				OPTIONAL { ?item wdt:P131 ?town. }
-				OPTIONAL { ?item wdt:P18 ?image. }
-				?item wdt:P17 wd:Q36 .
-				FILTER EXISTS { ?item p:P1435 ?monument }
-				OPTIONAL { ?item wdt:P31 ?type. }
-				OPTIONAL { ?item wdt:P373 ?category. }
-				SERVICE wikibase:label { bd:serviceParam wikibase:language "pl,en". }
-			}
+				GROUP BY ?item ?itemLabel ?town ?townLabel ?coord ?category
 		`;
 		// return Promise.resolve(query);
 
