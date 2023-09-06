@@ -8,8 +8,11 @@ CREATE TABLE public.wlz_dupl
     lat NUMERIC(11, 8),
     lon NUMERIC(11, 8),
     itemLabel TEXT,
-    town bigint,
-    townLabel TEXT
+    typeLabels TEXT,
+    townLabel TEXT,
+    stateLabel TEXT,
+    monumentStatus TEXT,
+    inspireIds TEXT
 );
 
 ALTER TABLE IF EXISTS public.wlz_dupl

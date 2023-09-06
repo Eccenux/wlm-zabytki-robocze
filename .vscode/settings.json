@@ -2,5 +2,10 @@
 	"search.exclude": {
 		"*.lnk": true,
 		"package-lock.json": true
+	},
+	"vscode-postgres.defaultConnection": "pg10",
+	"vscode-postgres.defaultDatabase": "wlz",
+	"files.associations": {
+		"*.sql": "postgres"
 	}
 }

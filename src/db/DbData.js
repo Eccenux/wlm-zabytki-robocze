@@ -28,8 +28,24 @@ export default class DbData {
 			this.init();
 		}
 		const query = `
-			INSERT INTO wlz_dupl (lat, lon, itemLabel, townLabel, item, town)
-			VALUES ($<coord.lat>, $<coord.lon>, $<itemLabel>, $<townLabel>, $<item>, $<town>)
+			INSERT INTO wlz_dupl (lat, lon
+				, item
+				, itemLabel
+				, townLabel
+				, stateLabel
+				, typeLabels
+				, inspireIds
+				, monumentStatus
+			)
+			VALUES ($<coord.lat>, $<coord.lon>
+				, $<item>
+				, $<itemLabel>
+				, $<townLabel>
+				, $<stateLabel>
+				, $<typeLabels>
+				, $<inspireIds>
+				, $<monumentStatus>
+			)
 			ON CONFLICT DO NOTHING
 			RETURNING id;
 		`;
@@ -42,8 +58,12 @@ export default class DbData {
 			},
 			"itemLabel": dump?.itemLabel ?? '',
 			"townLabel": dump?.townLabel ?? '',
+			"stateLabel": dump?.stateLabel ?? '',
+			"inspireIds": dump?.inspireIds ?? '',
+			"monumentStatus": dump?.monumentStatus ?? '',
+			"typeLabels": dump?.types ?? '',
 			"item": dump.item.replace('Q',''),
-			"town": (dump?.town ?? '-1').replace('Q',''),
+			// "town": (dump?.town ?? '-1').replace('Q',''),
 		}
 
 		this.coordTransform(data);	// floor coord (unify for select)
