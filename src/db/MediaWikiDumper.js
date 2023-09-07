@@ -17,7 +17,7 @@ const sqlNameMap = {
 	'agg_type': 'typ obiektu',
 	'agg_status': 'status dobra kultury',
 }
-const sqlQuery = `
+const sqlQuery = /* sql */`
 select concat(lat_, ':' , lon_) as latlon
 	, max(townLabel) as town
 	, max(stateLabel) as state

@@ -27,7 +27,7 @@ export default class DbData {
 		if (this.initDone === false) {
 			this.init();
 		}
-		const query = `
+		const query = /* sql */`
 			INSERT INTO wlz_dupl (lat, lon
 				, item
 				, itemLabel
@@ -102,7 +102,7 @@ export default class DbData {
 		if (this.initDone === false) {
 			this.init();
 		}
-		const query = `
+		const query = /* sql */`
 			SELECT count(*) as num FROM wlz_dupl
 			WHERE 
 				item = $<item>

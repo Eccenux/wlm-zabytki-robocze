@@ -108,7 +108,7 @@ export class MonumentsLoader {
 		// Example range:
 		// wikibase:cornerWest "Point(14.19 52.87)"^^geo:wktLiteral;
 		// wikibase:cornerEast "Point(14.22 56.89)"^^geo:wktLiteral.
-		const query = `
+		const query = /* sparql */`
 				SELECT ?item ?itemLabel 
 					(GROUP_CONCAT(DISTINCT ?typeLabel; SEPARATOR=", ") AS ?types)
 					(GROUP_CONCAT(DISTINCT ?inspireId; SEPARATOR=", ") AS ?inspireIds)
