@@ -64,6 +64,9 @@ export default class MediaWikiDumper {
 		this.initDone = true;
 	}
 
+	/**
+	 * Dump top sqlLimit rows as an MW table.
+	 */
 	async top() {
 		if (this.initDone === false) {
 			this.init();
@@ -76,7 +79,7 @@ export default class MediaWikiDumper {
 			}
 
 			// Format the result as a MediaWiki table
-			const wikitable = this.formatAsMediaWikiTable(result);
+			const wikitable = this.formatAsTable(result);
 			const wiki = `== TOP ${sqlLimit} ==\n${wikitable}`;
 
 			// Write the MediaWiki table to a file
@@ -89,7 +92,7 @@ export default class MediaWikiDumper {
 	}
 
 	/** @private */
-	formatAsMediaWikiTable(rows) {
+	formatAsTable(rows) {
 		let table = '{| class="topalign"\n';
 		const headers = Object.keys(rows[0]).filter((h)=>h in sqlNameMap);
 		const headerNames = headers.map((h)=>sqlNameMap[h]);
