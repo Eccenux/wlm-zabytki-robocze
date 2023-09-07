@@ -4,4 +4,4 @@ import MediaWikiDumper from "./db/MediaWikiDumper.js";
 const mediaWikiDumper = new MediaWikiDumper();
 
 // Connect to the database and dump the result as a MediaWiki table
-mediaWikiDumper.dumpToMediaWikiTable();
+mediaWikiDumper.top();

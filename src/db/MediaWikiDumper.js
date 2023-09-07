@@ -62,7 +62,7 @@ export default class MediaWikiDumper {
 		this.initDone = true;
 	}
 
-	async dumpToMediaWikiTable() {
+	async top() {
 		if (this.initDone === false) {
 			this.init();
 		}
@@ -75,9 +75,10 @@ export default class MediaWikiDumper {
 
 			// Format the result as a MediaWiki table
 			const wikitable = this.formatAsMediaWikiTable(result);
+			const wiki = `== TOP ${sqlLimit} ==\n${wikitable}`;
 
 			// Write the MediaWiki table to a file
-			fs.writeFileSync('output.wiki', wikitable);
+			fs.writeFileSync('output.wiki', wiki);
 
 			console.log('MediaWiki table has been written to output.wiki');
 		} catch (error) {
