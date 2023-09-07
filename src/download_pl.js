@@ -17,6 +17,6 @@ const boundaries = {
 
 const loader = new MonumentsLoader(boundaries.southWest.lat, boundaries.northEast.lat);
 // test batch
-loader.loadMany(boundaries);
+// await loader.loadMany(boundaries);
 // full
-// loader.loadMany(boundaries, -1);
+await loader.loadMany(boundaries, -1);

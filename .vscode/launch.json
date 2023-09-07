@@ -7,6 +7,15 @@
 		{
 			"type": "node",
 			"request": "launch",
+			"name": "Run download_pl.js",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"program": "${workspaceFolder}\\src\\download_pl.js"
+		},
+		{
+			"type": "node",
+			"request": "launch",
 			"name": "Run dbInsert.js",
 			"skipFiles": [
 				"<node_internals>/**"
@@ -30,15 +39,6 @@
 				"<node_internals>/**"
 			],
 			"program": "${workspaceFolder}\\src\\geodistance.js"
-		},
-		{
-			"type": "node",
-			"request": "launch",
-			"name": "Run download_pl.js",
-			"skipFiles": [
-				"<node_internals>/**"
-			],
-			"program": "${workspaceFolder}\\src\\download_pl.js"
 		}
 	]
 }

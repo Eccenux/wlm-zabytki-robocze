@@ -1,5 +1,6 @@
 // Node v14-18; Postgres v10-15.
 import pgPromise from "pg-promise";
+const QueryFile = pgPromise.QueryFile;
 import dbConfig from "./dbConfig.priv.js";
 import Log from "../Log.js";
 
@@ -19,9 +20,21 @@ export default class DbData {
 		this.initDone = true;
 	}
 	/**
+	 * Re-creates the table.
+	 */
+	async createTable() {
+		if (this.initDone === false) {
+			this.init();
+		}
+		const path = './db/CREATE_wlz_dupl.sql';
+		const file = new QueryFile(path);
+		await this.db.manyOrNone(file);
+	}
+
+	/**
 	 * Insert WD data into the database.
 	 * @param {Object} dump WD record.
-	 * @returns 
+	 * @returns false if insert failed.
 	 */
 	async insert(dump) {
 		if (this.initDone === false) {

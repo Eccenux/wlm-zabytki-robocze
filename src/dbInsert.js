@@ -7,11 +7,14 @@ import DbData from "./db/DbData.js";
 const db = new DbData();
 // db.insert(data);
 
+// WARNING! Removes previous data (for one table)
+await db.createTable();
+
 // Define the directory where your JSON files are located
 const directoryPath = './output';
 
 const files = new FileProcessor(db);
-files.processFiles(directoryPath);
+await files.processFiles(directoryPath);
 
 // test exists
 /**

@@ -6,7 +6,7 @@ import fs from 'fs';
 
 // Define the SQL query
 // const sqlQuery = fs.readFileSync('./src/db/find.dupl.sql');
-const sqlLimit = 10;
+const sqlLimit = 50;
 const sqlNameMap = {
 	'latlon': 'lokalizacja',
 	'town': 'miasto',
@@ -83,9 +83,10 @@ export default class MediaWikiDumper {
 			const wiki = `== TOP ${sqlLimit} ==\n${wikitable}`;
 
 			// Write the MediaWiki table to a file
-			fs.writeFileSync('output.wiki', wiki);
+			const output = 'output.wiki';
+			fs.writeFileSync(output, wiki);
 
-			console.log('MediaWiki table has been written to output.wiki');
+			console.log('Wikitable with %d base row(s) saved to ${output}', result.length);
 		} catch (error) {
 			console.error('Error dumping data to MediaWiki table:', error);
 		}
@@ -110,7 +111,6 @@ export default class MediaWikiDumper {
 			table += column + values.join(column);
 			// transform aggregate values
 			let aggs = this.transformAggregates(row, headers);
-			console.log(aggs);
 			// append 0-row aggs without rowspan
 			column = `\n| `;
 			values = this.shiftValues(aggs);
