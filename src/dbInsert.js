@@ -1,32 +1,24 @@
-import FileProcessor from "./FileProcessor.js";
-import DbData from "./db/DbData.js";
-
 /**
  * Insert WD data to local DB.
  */
-const db = new DbData();
-// db.insert(data);
+import process from 'node:process';
+import FileProcessor from "./FileProcessor.js";
+import DbData from "./db/DbData.js";
 
-// WARNING! Removes previous data (for one table)
-await db.createTable();
+try {
+	const db = new DbData();
+	// db.insert(data);
 
-// Define the directory where your JSON files are located
-const directoryPath = './output';
+	// WARNING! Removes previous data (for one table)
+	await db.createTable();
 
-const files = new FileProcessor(db);
-await files.processFiles(directoryPath);
+	// Define the directory where your JSON files are located
+	const directoryPath = './output';
 
-// test exists
-/**
-let re = await db.exists({
-	"coord": {
-		"lat": "52.87475",
-		"lon": "14.203194"
-	},
-	"itemLabel": "Cmentarz żydowski w Cedyni",
-	"townLabel": "Cedynia",
-	"item": "Q11690917",
-	"town": "Q954143"
-});
-console.log({re});
-/**/
+	const files = new FileProcessor(db);
+	await files.processFiles(directoryPath);
+
+} catch (error) {
+	console.error(error);
+	process.exit(500);
+}

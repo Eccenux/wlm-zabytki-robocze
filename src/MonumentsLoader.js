@@ -8,10 +8,12 @@ export class MonumentsLoader {
 	/**
 	 * @param {Number} lat1 range.
 	 * @param {Number} lat2 range.
+	 * @param {String} outputDir Out.
 	 */
-	constructor(lat1, lat2) {
+	constructor(lat1, lat2, outputDir) {
 		this.lat1 = downAccuracy(lat1, 2);
 		this.lat2 = ceilAccuracy(lat2, 2);
+		this.outputDir = outputDir;
 	}
 
 	/**
@@ -81,7 +83,7 @@ export class MonumentsLoader {
 	 * @param {Object} params 
 	 */
 	saveData(data, name) {
-		const outputDir = './output';
+		const outputDir = this.outputDir;
 		const outputFile = path.join(outputDir, name);
 
 		// Create the output directory if it doesn't exist

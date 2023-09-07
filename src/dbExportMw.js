@@ -1,7 +1,16 @@
+/**
+ * Export local DB data to MW table.
+ */
+import process from 'node:process';
 import MediaWikiDumper from "./db/MediaWikiDumper.js";
 
 // Create an instance of the MediaWikiDumper class
 const mediaWikiDumper = new MediaWikiDumper();
 
 // Connect to the database and dump the result as a MediaWiki table
-await mediaWikiDumper.top();
+try {
+	await mediaWikiDumper.top();
+} catch (error) {
+	console.error(error);
+	process.exit(500);
+}

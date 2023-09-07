@@ -1,8 +1,9 @@
 /**
  * Download Polish monuments.
  */
-
+import process from 'node:process';
 import { MonumentsLoader } from "./MonumentsLoader.js";
+import FileRemover from './FileRemover.js';
 
 /*
 	Polska.
@@ -15,8 +16,22 @@ const boundaries = {
 	"northEast":{"lng":24.19078, "lat":54.88292},
 }
 
-const loader = new MonumentsLoader(boundaries.southWest.lat, boundaries.northEast.lat);
-// test batch
-// await loader.loadMany(boundaries);
-// full
-await loader.loadMany(boundaries, -1);
+try {
+	const outputDir = './output';
+
+	const remover = new FileRemover();
+	await remover.removeFiles(outputDir, /lon_.+.json/);
+
+	if (remover)
+		throw "Test failed download";
+
+	const loader = new MonumentsLoader(boundaries.southWest.lat, boundaries.northEast.lat, outputDir);
+
+	// test batch
+	// await loader.loadMany(boundaries);
+	// full
+	await loader.loadMany(boundaries, -1);
+} catch (error) {
+	console.error(error);
+	process.exit(500);	// ext code / %errorlevel%
+}
