@@ -86,7 +86,7 @@ export default class MediaWikiDumper {
 			const output = 'output.wiki';
 			fs.writeFileSync(output, wiki);
 
-			console.log('Wikitable with %d base row(s) saved to ${output}', result.length);
+			console.log(`Wikitable with %d base row(s) saved to ${output}`, result.length);
 		} catch (error) {
 			console.error('Error dumping data to MediaWiki table:', error);
 		}
@@ -143,7 +143,7 @@ export default class MediaWikiDumper {
 				.map((header) => {
 					if (header === 'latlon') {
 						const ll = row[header];
-						return `[https://zabytki.toolforge.org/#!?c=${ll}:20 ${ll}]`;
+						return `[https://zabytki.toolforge.org/#!?c=${ll}:20 mapa]`;
 					}
 					return row[header];
 				})

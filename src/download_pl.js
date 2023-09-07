@@ -22,9 +22,6 @@ try {
 	const remover = new FileRemover();
 	await remover.removeFiles(outputDir, /lon_.+.json/);
 
-	if (remover)
-		throw "Test failed download";
-
 	const loader = new MonumentsLoader(boundaries.southWest.lat, boundaries.northEast.lat, outputDir);
 
 	// test batch
