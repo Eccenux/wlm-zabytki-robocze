@@ -17,10 +17,12 @@ const sqlNameMap = {
 	'agg_type': 'typ obiektu',
 	'agg_status': 'status dobra kultury',
 }
+const aggSeparator = '; ';
 const sqlQuery = /* sql */`
 select concat(lat_, ':' , lon_) as latlon
 	, max(townLabel) as town
 	, max(stateLabel) as state
+	, count(*) as rowCount
 	, count(distinct item) as cnt
 	, array_to_string(array_agg(item ORDER BY item), '; ') as agg_qid
 	, array_to_string(array_agg(inspireIds ORDER BY item), '; ') as agg_inspireid
@@ -89,28 +91,70 @@ export default class MediaWikiDumper {
 	/** @private */
 	formatAsMediaWikiTable(rows) {
 		let table = '{| class="topalign"\n';
-		const headers = Object.keys(rows[0]);
+		const headers = Object.keys(rows[0]).filter((h)=>h in sqlNameMap);
 		const headerNames = headers.map((h)=>sqlNameMap[h]);
 		table += '! ' + headerNames.join(' !! ') + '\n';
 
-		/**
-		 * TODO: better tables.
-		 * ✅mark column as agg_(regate)
-		 * rowspan = count rows in any agg_
-		 * add non-agg with rowspan
-		 * add 0-row agg without rowspan
-		 * add other agg as rows
-		 */
 		for (const row of rows) {
-			const values = headers
+			// const aggCount = row['rowCount'].split(aggSeparator).length;
+			const aggCount = row['rowcount'];
+			// init row 1st
+			table += '\n|-';
+			// add non-agg with rowspan
+			let values, column;
+			values = this.transformMain(row, headers);
+			column = `\n| rowspan=${aggCount} | `;
+			table += column + values.join(column);
+			// transform aggregate values
+			let aggs = this.transformAggregates(row, headers);
+			console.log(aggs);
+			// append 0-row aggs without rowspan
+			column = `\n| `;
+			values = this.shiftValues(aggs);
+			table += column + values.join(column);
+			// add other aggs as rows
+			while (aggs[0].length) {
+				table += '\n|-';
+				values = this.shiftValues(aggs);
+				table += column + values.join(column);
+			}
+		}
+
+		table += '\n|}\n';
+		return table;
+	}
+
+	/** @private Get 0-th item from each sub-array (modifies agg!). */
+	shiftValues(aggs) {
+		const values = [];
+		for (let index = 0; index < aggs.length; index++) {
+			values.push(aggs[index].shift());
+		}
+		return values;
+	}
+
+	/** @private Main columns. */
+	transformMain(row, headers) {
+		return headers
+				.filter(h=>!h.startsWith('agg_'))
 				.map((header) => {
 					if (header === 'latlon') {
 						const ll = row[header];
 						return `[https://zabytki.toolforge.org/#!?c=${ll}:20 ${ll}]`;
 					}
+					return row[header];
+				})
+		;
+	}
+
+	/** @private Aggregated columns. */
+	transformAggregates(row, headers) {
+		return headers
+				.filter(h=>h.startsWith('agg_'))
+				.map((header) => {
 					const isQ = (header === 'agg_qid');
 					return row[header]
-						.split('; ')
+						.split(aggSeparator)
 						.map(v=>{
 							if (!v.length) {
 								return '-';
@@ -120,13 +164,7 @@ export default class MediaWikiDumper {
 							}
 							return `[[wikidata:Q${v}|Q${v}]]`;
 						})
-						.join('<br>')
 				})
-			;
-			table += '\n|-\n| ' + values.join('\n| ');
-		}
-
-		table += '\n|}\n';
-		return table;
+		;
 	}
 }
