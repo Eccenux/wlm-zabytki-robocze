@@ -67,7 +67,7 @@ export default class MediaWikiDumper {
 		const dt = new Date().toISOString().replace(/:/g, '.');
 		this.log = new Log(`./output/${dt}--db2mw.log`);
 
-		this.topBound = 6;
+		this.topBound = 4;
 	}
 
 	/** @private init */
