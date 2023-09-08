@@ -49,6 +49,10 @@ const wikiSectionHeader = /* xml */`
 <templatestyles src="Nux/wlz-duplikaty.css"/>
 <templatestyles src="Nux/szeroka-tabela.css"/>
 <div class="tpl--wlz-duplikaty-off wide-wikitable sticky-top">
+Uwaga! Na mapie WLZ wyświetlają się wyłączenie zabytki ze statusem „zabytek nieruchomy”. Przyjmujemy, że powinno być tak:
+* status „zabytek nieruchomy” – zabytek jest w wojewódzkim rejestrze zabytków nieruchomych (czyli np. budynki, a nie wykopaliska);
+* status „zabytek w Polsce” – zabytek jest w innej ewidencji (np. ewidencji gminnej, albo jest zabytkiem ruchomym).
+W tabelach są wszystkie zabytki (wszystko co ma status dobra kultury i ma współrzędne). Zakładamy, że część statusów może być nieprawidłowa (i trzeba je poprawić).
 `;
 const wikiSectionFooter = /* xml */`
 </div>
