@@ -25,9 +25,9 @@ try {
 	const loader = new MonumentsLoader(boundaries.southWest.lat, boundaries.northEast.lat, outputDir);
 
 	// test batch
-	// await loader.loadMany(boundaries);
+	await loader.loadMany(boundaries);
 	// full
-	await loader.loadMany(boundaries, -1);
+	// await loader.loadMany(boundaries, -1);
 } catch (error) {
 	console.error(error);
 	process.exit(500);	// ext code / %errorlevel%
