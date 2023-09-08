@@ -95,7 +95,10 @@ export default class MediaWikiDumper {
 			// Format the result as a MediaWiki table
 			const wikitable = this.formatAsTable(result);
 			const count = result.length;
-			const wiki = `== TOP ==\nTop${count} (najwięcej połączonych)\n${wikitable}`;
+			let wiki = `== TOP ==\nTop${count} (najwięcej połączonych)\n`;
+			wiki += wikiSectionHeader;
+			wiki += wikitable;
+			wiki += wikiSectionFooter;
 
 			// Write the MediaWiki table to a file
 			const output = 'output_top.wiki';

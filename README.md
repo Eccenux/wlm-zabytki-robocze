@@ -6,3 +6,12 @@ https://pl.wikipedia.org/wiki/Wikipedysta:Nux/test_WLZ_duplikaty
 
 Dokładność geowspółrzędnych vs dystans:
 https://pl.wikipedia.org/wiki/Wikipedysta:Nux/test_WLZ_dok%C5%82adno%C5%9B%C4%87_geo-wsp%C3%B3%C5%82rz%C4%99dnych
+
+TODO:
+- itemLabel in table
+- remove state from table (section already has this)
+- read state by rank/date? (pr not having `until`)
+- mark as done
+	- skip groups that all have iid and all iid are unique (any empty/null means the group will not be skipped)
+	- [xor] skip `part-of` for two-item duplicate
+	- [xor] skip `is-different-then` if all in group are different

@@ -45,7 +45,10 @@ function pageTitle(file) {
 	}));
 
 	// todo: top
-	//...
+	configs.push(new DeployConfig({
+		src: 'output_top.wiki',
+		dst: 'Wikipedysta:Nux/test WLZ duplikaty',
+	}));
 
 	// execute
 	await ployBot.deploy(configs);
