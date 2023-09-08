@@ -3,6 +3,9 @@ import pgPromise from "pg-promise";
 import dbConfig from "./dbConfig.priv.js";
 import Log from "../Log.js";
 import fs from 'fs';
+import path from 'path';
+import FileRemover from "../FileRemover.js";
+import FileMerger from "./FileMerger.js";
 
 // Define the SQL query
 // const sqlQuery = fs.readFileSync('./src/db/find.dupl.sql');
@@ -21,7 +24,7 @@ const aggSeparator = '; ';
 const sqlQuery = /* sql */`
 select concat(lat_, ':' , lon_) as latlon
 	, max(townLabel) as town
-	, max(stateLabel) as state
+	, lower(max(stateLabel)) as state
 	, count(*) as rowCount
 	, count(distinct item) as cnt
 	, array_to_string(array_agg(item ORDER BY item), '; ') as agg_qid
@@ -39,9 +42,6 @@ from (
 	FROM public.wlz_dupl
 ) as t
 group by lat_, lon_
-having count(distinct item) > 2
-order by cnt desc
-limit ${sqlLimit}
 `;
 
 /**
@@ -52,6 +52,8 @@ export default class MediaWikiDumper {
 		this.initDone = false;
 		const dt = new Date().toISOString().replace(/:/g, '.');
 		this.log = new Log(`./output/${dt}--db2mw.log`);
+
+		this.topBound = 6;
 	}
 
 	/** @private init */
@@ -73,14 +75,20 @@ export default class MediaWikiDumper {
 		}
 		try {
 			// Execute the SQL query
-			const result = await this.db.many(sqlQuery);
+			const sql = `${sqlQuery}
+				having count(distinct item) > ${this.topBound}
+				order by cnt desc
+				limit ${sqlLimit}
+			`;
+			const result = await this.db.many(sql);
 			if (!Array.isArray(result)) {
 				throw "Unexpected result";
 			}
 
 			// Format the result as a MediaWiki table
 			const wikitable = this.formatAsTable(result);
-			const wiki = `== TOP ${sqlLimit} ==\n${wikitable}`;
+			const count = result.length;
+			const wiki = `== TOP ==\nTop${count} (najwięcej połączonych)\n${wikitable}`;
 
 			// Write the MediaWiki table to a file
 			const output = 'output.wiki';
@@ -90,6 +98,108 @@ export default class MediaWikiDumper {
 		} catch (error) {
 			console.error('Error dumping data to MediaWiki table:', error);
 		}
+	}
+
+	/**
+	 * Dump ~all by state.
+	 */
+	async states() {
+		if (this.initDone === false) {
+			this.init();
+		}
+		try {
+			// Execute the SQL query
+			const sql = `${sqlQuery}
+				having count(distinct item) > 1
+				AND	count(distinct item) <= ${this.topBound}
+				order by state, town, latlon, cnt desc
+			`;
+			const result = await this.db.many(sql);
+			if (!Array.isArray(result)) {
+				throw "Unexpected result";
+			}
+
+			const outputDir = './output/mw/';
+
+			// Clear output
+			const remover = new FileRemover();
+			await remover.removeFiles(outputDir, /woj.+.wiki/);
+			
+			// Save by states
+			const stateMap = this.splitBytState(result);
+			const states = Object.keys(stateMap);
+			for (const state of states) {
+				const rows = stateMap[state];
+			
+				// Format state data as a MediaWiki table
+				const wikitable = this.formatAsTable(rows);
+				const wiki = `== ${state} ==\n${wikitable}`;
+			
+				// Write the MediaWiki table to a file
+				const safeState = this.safeState(state);
+				const output = `${safeState}.wiki`;
+				fs.writeFileSync(path.join(outputDir, output), wiki);
+
+				// info
+				console.log(`Wikitable with %d base row(s) saved to ${output}`, rows.length);
+			}
+
+			// merge files
+			const fileMerger = new FileMerger(outputDir);
+			const filterWikiFiles = (file) => file.startsWith('woj') && file.endsWith('.wiki');
+			fileMerger.mergeFiles('output_woj.wiki', filterWikiFiles);
+		} catch (error) {
+			console.error('Error dumping data to MediaWiki table:', error);
+		}
+	}
+
+	/** @private Make a state name safe for a file. */
+	safeState(state) {
+		const safeState = this.translitPolish(state)
+			.replace(/^woje\S+/i, 'woj')
+			.replace(/[^a-z]+/g, '_')
+		;
+		return safeState;
+	}
+
+	/** @private Replace Polish characters */
+	translitPolish(text) {
+		return text
+			.replace(/ą/g, 'a')
+			.replace(/ć/g, 'c')
+			.replace(/ę/g, 'e')
+			.replace(/ł/g, 'l')
+			.replace(/ń/g, 'n')
+			.replace(/ó/g, 'o')
+			.replace(/ś/g, 's')
+			.replace(/ż/g, 'z')
+			.replace(/ź/g, 'z')
+			.replace(/Ą/g, 'A')
+			.replace(/Ć/g, 'C')
+			.replace(/Ę/g, 'E')
+			.replace(/Ł/g, 'L')
+			.replace(/Ń/g, 'N')
+			.replace(/Ó/g, 'O')
+			.replace(/Ś/g, 'S')
+			.replace(/Ż/g, 'Z')
+			.replace(/Ź/g, 'Z')
+		;
+	}
+
+	/** @private */
+	splitBytState(rows) {
+		// Create an object to store data grouped by state
+		const stateMap = {};
+		rows.forEach((row) => {
+			const { state } = row;
+			// If the state doesn't exist in the stateMap, create an empty array for it
+			if (!stateMap[state]) {
+				stateMap[state] = [];
+			}
+			// Push the row data into the corresponding state's array
+			stateMap[state].push(row);
+		});
+		return stateMap;
 	}
 
 	/** @private */

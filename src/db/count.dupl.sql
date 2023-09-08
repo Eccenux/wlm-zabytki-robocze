@@ -1,3 +1,12 @@
+-- województwa
+SELECT 
+COALESCE(lower(stateLabel), '_brak'), count(*)
+FROM public.wlz_dupl
+group by COALESCE(lower(stateLabel), '_brak')
+-- stare województwa...
+HAVING count(*) > 300
+order by 1
+;
 /**
 	Liczba duplikatów zależnie od stopnia zaokrąglenia współrzędnych.
 
