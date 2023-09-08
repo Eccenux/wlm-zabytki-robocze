@@ -5,7 +5,6 @@ import Log from "../Log.js";
 import fs from 'fs';
 import path from 'path';
 import FileRemover from "../FileRemover.js";
-import FileMerger from "./FileMerger.js";
 
 // Define the SQL query
 // const sqlQuery = fs.readFileSync('./src/db/find.dupl.sql');
@@ -42,6 +41,14 @@ from (
 	FROM public.wlz_dupl
 ) as t
 group by lat_, lon_
+`;
+const wikiSectionHeader = /* xml */`
+<templatestyles src="Nux/wlz-duplikaty.css"/>
+<templatestyles src="Nux/szeroka-tabela.css"/>
+<div class="tpl--wlz-duplikaty-off wide-wikitable sticky-top">
+`;
+const wikiSectionFooter = /* xml */`
+</div>
 `;
 
 /**
@@ -91,7 +98,7 @@ export default class MediaWikiDumper {
 			const wiki = `== TOP ==\nTop${count} (najwięcej połączonych)\n${wikitable}`;
 
 			// Write the MediaWiki table to a file
-			const output = 'output.wiki';
+			const output = 'output_top.wiki';
 			fs.writeFileSync(output, wiki);
 
 			console.log(`Wikitable with %d base row(s) saved to ${output}`, result.length);
@@ -123,17 +130,29 @@ export default class MediaWikiDumper {
 
 			// Clear output
 			const remover = new FileRemover();
-			await remover.removeFiles(outputDir, /woj.+.wiki/);
-			
+			await remover.removeFiles(outputDir, /woj.+\.wiki/);
+
 			// Save by states
 			const stateMap = this.splitBytState(result);
 			const states = Object.keys(stateMap);
+			const info = {
+				list : [],
+				include : [],
+				total : 0,
+			};
 			for (const state of states) {
 				const rows = stateMap[state];
+				if (!state.length) {
+					console.warn('Skipping empty state name with %d row(s).', rows.length);
+					continue;
+				}
 			
 				// Format state data as a MediaWiki table
 				const wikitable = this.formatAsTable(rows);
-				const wiki = `== ${state} ==\n${wikitable}`;
+				let wiki = `== ${state} ==\n`;
+				wiki += wikiSectionHeader;
+				wiki += wikitable;
+				wiki += wikiSectionFooter;
 			
 				// Write the MediaWiki table to a file
 				const safeState = this.safeState(state);
@@ -142,17 +161,31 @@ export default class MediaWikiDumper {
 
 				// info
 				console.log(`Wikitable with %d base row(s) saved to ${output}`, rows.length);
+				const title = this.constructor.pageTitle(output); 
+				info.total += rows.length;
+				info.list.push(`* [[${title}|${state}]] (${rows.length}).`);
+				info.include.push(`{{${title}}}`);
 			}
 
-			// merge files
-			const fileMerger = new FileMerger(outputDir);
-			const filterWikiFiles = (file) => file.startsWith('woj') && file.endsWith('.wiki');
-			fileMerger.mergeFiles('output_woj.wiki', filterWikiFiles);
+			// // merge files
+			// const fileMerger = new FileMerger(outputDir);
+			// const filterWikiFiles = (file) => file.startsWith('woj') && file.endsWith('.wiki');
+			// fileMerger.mergeFiles('output_woj.wiki', filterWikiFiles);
+
+			// summary/includes
+			fs.writeFileSync('output_states_list.wiki', info.list.join('\n'));
+			fs.writeFileSync('output_states_all.wiki', info.include.join('\n'));
+			console.log('Summary: %d files with %d base rows.', info.list.length, info.total);
 		} catch (error) {
 			console.error('Error dumping data to MediaWiki table:', error);
 		}
 	}
 
+	static pageTitle(file) {
+		const subtitle = file.replace('.wiki', ''); // Remove extension
+		return `Wikipedysta:NuxBot/WLZ_duplikaty/${subtitle}`;
+	}
+	
 	/** @private Make a state name safe for a file. */
 	safeState(state) {
 		const safeState = this.translitPolish(state)
@@ -272,6 +305,9 @@ export default class MediaWikiDumper {
 							if (!v.length) {
 								return '-';
 							}
+							if (header === 'agg_inspireid') {
+								return this.vInspire(v);
+							}
 							if (!isQ) {
 								return v;
 							}
@@ -280,4 +316,14 @@ export default class MediaWikiDumper {
 				})
 		;
 	}
+
+	/** @private */
+	vInspire(v) {
+		return v
+			.split(',')
+			.map(id=>id.trim())
+			.map(id=>`[https://zabytek.pl/pl/obiekty/zabytek?rejestr=rejestr-zabytkow&inspire_id=${id} ${id}]`)
+			.join(', ')
+		;
+	}	
 }

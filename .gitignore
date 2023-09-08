@@ -4,3 +4,4 @@ output/*
 *.priv.*
 *.priv
 output*.wiki
+bot.config.mjs

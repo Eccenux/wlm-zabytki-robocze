@@ -21,6 +21,7 @@
     "mocha": "10.x"
   },
   "dependencies": {
-    "pg-promise": "^11.5.4"
+    "pg-promise": "^11.5.4",
+    "wikiploy": "^1.5.3"
   }
 }

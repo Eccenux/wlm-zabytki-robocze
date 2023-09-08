@@ -34,6 +34,15 @@
 		{
 			"type": "node",
 			"request": "launch",
+			"name": "Run wikiploy.mjs",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"program": "${workspaceFolder}\\wikiploy.mjs"
+		},
+		{
+			"type": "node",
+			"request": "launch",
 			"name": "Run geodistance.js",
 			"skipFiles": [
 				"<node_internals>/**"
