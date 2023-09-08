@@ -31,7 +31,7 @@ export class MonumentsLoader {
 				return false;
 			}
 		}
-		const step = 0.005;
+		const step = 0.015;
 		let steps = 0;
 		const qids = new Set();
 		let total = 0;
