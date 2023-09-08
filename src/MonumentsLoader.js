@@ -107,6 +107,11 @@ export class MonumentsLoader {
 		const lon2 = ceilAccuracy(lon2raw, 3);
 
 		// Polska: ?item wdt:P17 wd:Q36 .
+
+		// FILTER NOT EXISTS { ?state wdt:P576 [] }
+		// P576 = data rozwiązania lub końca
+		// Filter for województwo lwowskie and similar: https://www.wikidata.org/wiki/Q2303972
+
 		// Example range:
 		// wikibase:cornerWest "Point(14.19 52.87)"^^geo:wktLiteral;
 		// wikibase:cornerEast "Point(14.22 56.89)"^^geo:wktLiteral.
@@ -131,6 +136,7 @@ export class MonumentsLoader {
 						?item wdt:P131 ?town . 
 						?town (wdt:P131)* ?state .
 						FILTER EXISTS { ?state wdt:P31 wd:Q150093 }
+						FILTER NOT EXISTS { ?state wdt:P576 [] }
 					}
 					FILTER EXISTS { ?item wdt:P17 wd:Q36 . }
 					?item wdt:P1435 ?monument
