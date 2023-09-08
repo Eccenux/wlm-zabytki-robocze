@@ -18,21 +18,24 @@ const sqlNameMap = {
 	'agg_inspireid': 'inspire id',
 	'agg_type': 'typ obiektu',
 	'agg_status': 'status dobra kultury',
+	'agg_item': 'etykieta',
 }
-const aggSeparator = '; ';
+const aggSeparator = ' ;; ';
 const sqlQuery = /* sql */`
 select concat(lat_, ':' , lon_) as latlon
 	, max(townLabel) as town
 	, lower(max(stateLabel)) as state
 	, count(*) as rowCount
 	, count(distinct item) as cnt
-	, array_to_string(array_agg(item ORDER BY item), '; ') as agg_qid
-	, array_to_string(array_agg(inspireIds ORDER BY item), '; ') as agg_inspireid
-	, array_to_string(array_agg(typeLabels ORDER BY item), '; ') as agg_type
-	, array_to_string(array_agg(monumentStatus ORDER BY item), '; ') as agg_status
+	, array_to_string(array_agg(item ORDER BY item), '${aggSeparator}') as agg_qid
+	, array_to_string(array_agg(inspireIds ORDER BY item), '${aggSeparator}') as agg_inspireid
+	, array_to_string(array_agg(typeLabels ORDER BY item), '${aggSeparator}') as agg_type
+	, array_to_string(array_agg(monumentStatus ORDER BY item), '${aggSeparator}') as agg_status
+	, array_to_string(array_agg(itemLabel ORDER BY item), '${aggSeparator}') as agg_item
 from (
 	SELECT cast(lat as NUMERIC(11,6)) as lat_, cast(lon as NUMERIC(11,6)) as lon_
 	, item
+	, itemLabel
 	, townLabel
 	, stateLabel
 	, inspireIds
@@ -93,7 +96,7 @@ export default class MediaWikiDumper {
 			}
 
 			// Format the result as a MediaWiki table
-			const wikitable = this.formatAsTable(result);
+			const wikitable = this.formatAsTable(result, sqlNameMap);
 			const count = result.length;
 			let wiki = `== TOP ==\nTop${count} (najwięcej połączonych)\n`;
 			wiki += wikiSectionHeader;
@@ -151,7 +154,9 @@ export default class MediaWikiDumper {
 				}
 			
 				// Format state data as a MediaWiki table
-				const wikitable = this.formatAsTable(rows);
+				const nameMap = { ...sqlNameMap }
+				delete nameMap.state;	// remove state from table (section already has this)
+				const wikitable = this.formatAsTable(rows, nameMap);
 				let wiki = `== ${state} ==\n`;
 				wiki += wikiSectionHeader;
 				wiki += wikitable;
@@ -239,10 +244,10 @@ export default class MediaWikiDumper {
 	}
 
 	/** @private */
-	formatAsTable(rows) {
+	formatAsTable(rows, nameMap) {
 		let table = '{| class="topalign"\n';
-		const headers = Object.keys(rows[0]).filter((h)=>h in sqlNameMap);
-		const headerNames = headers.map((h)=>sqlNameMap[h]);
+		const headers = Object.keys(rows[0]).filter((h)=>h in nameMap);
+		const headerNames = headers.map((h)=>nameMap[h]);
 		table += '! ' + headerNames.join(' !! ') + '\n';
 
 		for (const row of rows) {
