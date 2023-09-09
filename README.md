@@ -23,6 +23,9 @@ https://pl.wikipedia.org/wiki/Wikipedysta:Nux/test_WLZ_dok%C5%82adno%C5%9B%C4%87
 		Q30049642
 		Q30049645
 		Q30049646 
+- gadet for mark as done? or just use `qsOtherThen.js`?
+- gadet for replacing locations? (based on `wdApi.notes.js`)
+- BTW. jenkins-data repo (local)
 
 ## Zawartość repo
 
