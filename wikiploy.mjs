@@ -49,7 +49,7 @@ function pageTitle(file) {
 	// top config
 	configs.push(new DeployConfig({
 		src: 'output_top.wiki',
-		dst: 'Wikipedysta:Nux/test WLZ duplikaty top',
+		dst: 'Wikipedysta:NuxBot/WLZ duplikaty/top',
 	}));
 
 	// execute
