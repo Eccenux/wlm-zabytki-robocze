@@ -196,9 +196,6 @@ export class MonumentsLoader {
 
 	/** API record to lite record. */
 	static recordTransform(r) {
-		if (r?.otherThen?.value) {
-			console.log(r?.otherThen?.value);
-		}
 		return {
 			coord : this.coordsTransform(r.coord),
 			item : this.entityUriToQ(r.item),
