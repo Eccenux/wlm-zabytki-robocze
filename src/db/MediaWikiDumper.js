@@ -108,7 +108,7 @@ export default class MediaWikiDumper {
 			// Format the result as a MediaWiki table
 			const wikitable = this.formatAsTable(result, sqlNameMap);
 			const count = result.length;
-			let wiki = `== TOP ==\nTop${count} (najwięcej powtórznych lokalizacji)\n__NOTOC__\n`;
+			let wiki = `== TOP ==\n__NOTOC__\nTop${count} (najwięcej powtórznych lokalizacji)\n`;
 			wiki += wikiSectionHeader;
 			wiki += wikitable;
 			wiki += wikiSectionFooter;
