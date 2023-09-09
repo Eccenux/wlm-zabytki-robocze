@@ -143,7 +143,11 @@ export default class MediaWikiDumper {
 			}
 
 			const outputDir = './output/mw/';
-
+			// create
+			if (!fs.existsSync(outputDir)) {
+				fs.mkdirSync(outputDir, { recursive: true });
+			}
+	
 			// Clear output
 			const remover = new FileRemover();
 			await remover.removeFiles(outputDir, /woj.+\.wiki/);
