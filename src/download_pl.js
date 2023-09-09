@@ -15,6 +15,9 @@ const boundaries = {
 	"southWest":{"lng":14.09002, "lat":48.87194},
 	"northEast":{"lng":24.19078, "lat":54.88292},
 }
+// Legnica
+// "southWest":{"lng":16.10, "lat":51.15},
+// "northEast":{"lng":16.18, "lat":51.23},
 
 try {
 	const outputDir = './output';

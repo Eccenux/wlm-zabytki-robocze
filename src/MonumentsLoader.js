@@ -120,6 +120,7 @@ export class MonumentsLoader {
 					(GROUP_CONCAT(DISTINCT ?typeLabel; SEPARATOR=", ") AS ?types)
 					(GROUP_CONCAT(DISTINCT ?inspireId; SEPARATOR=", ") AS ?inspireIds)
 					(GROUP_CONCAT(DISTINCT ?monumentLabel; SEPARATOR=", ") AS ?monumentStatus)
+					(GROUP_CONCAT(DISTINCT ?otherId; SEPARATOR=", ") AS ?otherThen)
 					?town ?townLabel 
 					?state ?stateLabel 
 					?coord
@@ -143,6 +144,7 @@ export class MonumentsLoader {
 					OPTIONAL { ?item wdt:P31 ?type. }
 					OPTIONAL { ?item wdt:P373 ?category. }
 					OPTIONAL { ?item wdt:P4115 ?inspireId. }
+					OPTIONAL { ?item wdt:P1889 ?otherId. }
 					SERVICE wikibase:label { 
 						bd:serviceParam wikibase:language "pl,en". 
 						?item rdfs:label ?itemLabel .
@@ -173,7 +175,7 @@ export class MonumentsLoader {
 		return this.constructor.transform(data);
 	}
 
-	static entityUriRe = /.+\/Q/;
+	static entityUriRe = /http[^ ]+?\/Q/g;
 	static entityUriToQ(property) {
 		if (!property?.value) {
 			return undefined;
@@ -194,6 +196,9 @@ export class MonumentsLoader {
 
 	/** API record to lite record. */
 	static recordTransform(r) {
+		if (r?.otherThen?.value) {
+			console.log(r?.otherThen?.value);
+		}
 		return {
 			coord : this.coordsTransform(r.coord),
 			item : this.entityUriToQ(r.item),
@@ -201,6 +206,7 @@ export class MonumentsLoader {
 			types : r?.types?.value,
 			inspireIds : r?.inspireIds?.value,
 			monumentStatus : r?.monumentStatus?.value,
+			otherThen : this.entityUriToQ(r?.otherThen),
 			town : this.entityUriToQ(r.town),
 			townLabel : r?.townLabel?.value,
 			state : this.entityUriToQ(r.state),

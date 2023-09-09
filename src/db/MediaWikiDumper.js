@@ -16,6 +16,7 @@ const sqlNameMap = {
 	'cnt': 'licznik',
 	'agg_qid': 'Q (duplikat lub złe współrzędne)',
 	'agg_inspireid': 'inspire id',
+	'agg_other': 'inne niż',
 	'agg_type': 'typ obiektu',
 	'agg_status': 'status dobra kultury',
 	'agg_item': 'etykieta',
@@ -31,6 +32,7 @@ select concat(lat_, ':' , lon_) as latlon
 	, array_to_string(array_agg(inspireIds ORDER BY item), '${aggSeparator}') as agg_inspireid
 	, array_to_string(array_agg(typeLabels ORDER BY item), '${aggSeparator}') as agg_type
 	, array_to_string(array_agg(monumentStatus ORDER BY item), '${aggSeparator}') as agg_status
+	, array_to_string(array_agg(otherThen ORDER BY item), '${aggSeparator}') as agg_other
 	, array_to_string(array_agg(itemLabel ORDER BY item), '${aggSeparator}') as agg_item
 from (
 	SELECT cast(lat as NUMERIC(11,6)) as lat_, cast(lon as NUMERIC(11,6)) as lon_
@@ -41,6 +43,7 @@ from (
 	, inspireIds
 	, typeLabels
 	, monumentStatus
+	, otherThen
 	FROM public.wlz_dupl
 ) as t
 group by lat_, lon_

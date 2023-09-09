@@ -14,7 +14,15 @@ https://pl.wikipedia.org/wiki/Wikipedysta:Nux/test_WLZ_dok%C5%82adno%C5%9B%C4%87
 - mark as done
 	- skip groups that all have iid and all iid are unique (any empty/null means the group will not be skipped)
 	- [xor] skip `part-of` for two-item duplicate
-	- [xor] skip `is-different-then` if all in group are different
+	- [xor] skip `is-different-then` (P1889) if all in group are different
+		E.g.:
+		https://www.wikidata.org/wiki/Q30049639
+		https://www.wikidata.org/wiki/Q30049640
+		https://www.wikidata.org/wiki/Q30049641
+		2nd group:
+		Q30049642
+		Q30049645
+		Q30049646 
 
 ## Zawartość repo
 
@@ -27,3 +35,4 @@ Główne skrypty:
 Skrypty pomocnicze:
 - `geodistance.js` -- spr. przełożenia dokładności współrzędnych (liczby miejsc po przecinku) na fizyczną dokładność lokalizacji (w metrach, a nawet nanometrach). Specyficzne dla Polski.
 - `OSM-geocoding.js` -- skrypt pomocniczy do ustalania współrzędnych grupy adresów.
+- `qsOtherThen.js` -- genertator quick statements do wstawiania P1889 („inne niż”).
