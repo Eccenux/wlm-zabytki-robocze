@@ -16,10 +16,11 @@ const sqlNameMap = {
 	'cnt': 'licznik',
 	'agg_qid': 'Q (duplikat lub złe współrzędne)',
 	'agg_inspireid': 'inspire id',
-	'agg_other': 'inne niż',
 	'agg_type': 'typ obiektu',
 	'agg_status': 'status dobra kultury',
 	'agg_item': 'etykieta',
+	'agg_other': 'inne niż',
+	'agg_street': 'ulica',
 }
 const aggSeparator = ' ;; ';
 const sqlQuery = /* sql */`
@@ -30,10 +31,11 @@ select concat(lat_, ':' , lon_) as latlon
 	, count(distinct item) as cnt
 	, array_to_string(array_agg(item ORDER BY item), '${aggSeparator}') as agg_qid
 	, array_to_string(array_agg(inspireIds ORDER BY item), '${aggSeparator}') as agg_inspireid
+	, array_to_string(array_agg(otherThen ORDER BY item), '${aggSeparator}') as agg_other
 	, array_to_string(array_agg(typeLabels ORDER BY item), '${aggSeparator}') as agg_type
 	, array_to_string(array_agg(monumentStatus ORDER BY item), '${aggSeparator}') as agg_status
-	, array_to_string(array_agg(otherThen ORDER BY item), '${aggSeparator}') as agg_other
 	, array_to_string(array_agg(itemLabel ORDER BY item), '${aggSeparator}') as agg_item
+	, array_to_string(array_agg(street ORDER BY item), '${aggSeparator}') as agg_street
 from (
 	SELECT cast(lat as NUMERIC(11,6)) as lat_, cast(lon as NUMERIC(11,6)) as lon_
 	, item
@@ -44,6 +46,7 @@ from (
 	, typeLabels
 	, monumentStatus
 	, otherThen
+	, street
 	FROM public.wlz_dupl
 ) as t
 group by lat_, lon_
@@ -294,6 +297,11 @@ export default class MediaWikiDumper {
 		return values;
 	}
 
+	/** @private */
+	escape(value) {
+		return value.replace(/|/g, '⏐');	// avoid breaking wikitable
+	}
+
 	/** @private Main columns. */
 	transformMain(row, headers) {
 		return headers
@@ -303,7 +311,7 @@ export default class MediaWikiDumper {
 						const ll = row[header];
 						return `[https://zabytki.toolforge.org/#!?c=${ll}:20 mapa]`;
 					}
-					return row[header];
+					return this.escape(row[header]);
 				})
 		;
 	}
@@ -315,6 +323,7 @@ export default class MediaWikiDumper {
 				.map((header) => {
 					const isQ = (header === 'agg_qid');
 					return row[header]
+						.map(v=>this.escape(v))
 						.split(aggSeparator)
 						.map(v=>{
 							if (!v.length) {

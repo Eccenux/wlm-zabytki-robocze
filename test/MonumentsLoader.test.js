@@ -14,10 +14,12 @@ describe('MonumentsLoader', () => {
 				townLabel:{'xml:lang': 'pl', type: 'literal', value: 'Drezno'},
 				state:     {type: 'uri', value: 'http://www.wikidata.org/entity/Q1234567890'},
 				stateLabel:{'xml:lang': 'pl', type: 'literal', value: 'województwo pomorsko-zębrzyckie'},
+				
 				types:          {type: 'literal', value: 'abc, def'},
 				inspireIds:     {type: 'literal', value: 'PL.1.9.ZIPOZ.NID_N_02_BK.85004'},
 				monumentStatus: {type: 'literal', value: 'zabytek nieruchomy'},
 				otherThen:      {type: 'literal', value: 'http://www.wikidata.org/entity/Q123, http://www.wikidata.org/entity/Q456'},
+				street:         {type: 'literal', value: 'Myśliwska 8/9'},
 			};
 			let expected = {
 				coord:    {lon:'13.8645', lat:'51.0168'},
@@ -32,6 +34,7 @@ describe('MonumentsLoader', () => {
 				inspireIds:     'PL.1.9.ZIPOZ.NID_N_02_BK.85004',
 				monumentStatus: 'zabytek nieruchomy',
 				otherThen:      'Q123, Q456',
+				street:         'Myśliwska 8/9',
 			};
 
 			result = MonumentsLoader.recordTransform(record)
@@ -51,6 +54,7 @@ describe('MonumentsLoader', () => {
 				"state": {},
 				"stateLabel": {},
 				otherThen: {},
+				street: {},
 			};
 			let expected = {
 				coord:    {lon:undefined, lat:undefined},
@@ -64,6 +68,7 @@ describe('MonumentsLoader', () => {
 				"state": undefined,
 				"stateLabel": undefined,
 				otherThen: undefined,
+				street: undefined,
 			};
 
 			result = MonumentsLoader.recordTransform(record)

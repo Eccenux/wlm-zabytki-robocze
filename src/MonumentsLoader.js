@@ -121,6 +121,7 @@ export class MonumentsLoader {
 					(GROUP_CONCAT(DISTINCT ?inspireId; SEPARATOR=", ") AS ?inspireIds)
 					(GROUP_CONCAT(DISTINCT ?monumentLabel; SEPARATOR=", ") AS ?monumentStatus)
 					(GROUP_CONCAT(DISTINCT ?otherId; SEPARATOR=", ") AS ?otherThen)
+					(GROUP_CONCAT(DISTINCT ?streetA; SEPARATOR=", ") AS ?street)
 					?town ?townLabel 
 					?state ?stateLabel 
 					?coord
@@ -145,6 +146,7 @@ export class MonumentsLoader {
 					OPTIONAL { ?item wdt:P373 ?category. }
 					OPTIONAL { ?item wdt:P4115 ?inspireId. }
 					OPTIONAL { ?item wdt:P1889 ?otherId. }
+					OPTIONAL { ?item wdt:P6375 ?streetA. }
 					SERVICE wikibase:label { 
 						bd:serviceParam wikibase:language "pl,en". 
 						?item rdfs:label ?itemLabel .
@@ -204,6 +206,7 @@ export class MonumentsLoader {
 			inspireIds : r?.inspireIds?.value,
 			monumentStatus : r?.monumentStatus?.value,
 			otherThen : this.entityUriToQ(r?.otherThen),
+			street : r?.street?.value,
 			town : this.entityUriToQ(r.town),
 			townLabel : r?.townLabel?.value,
 			state : this.entityUriToQ(r.state),

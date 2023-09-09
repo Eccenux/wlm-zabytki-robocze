@@ -50,6 +50,7 @@ export default class DbData {
 				, inspireIds
 				, monumentStatus
 				, otherThen
+				, street
 			)
 			VALUES ($<coord.lat>, $<coord.lon>
 				, $<item>
@@ -60,6 +61,7 @@ export default class DbData {
 				, $<inspireIds>
 				, $<monumentStatus>
 				, $<otherThen>
+				, $<street>
 			)
 			ON CONFLICT DO NOTHING
 			RETURNING id;
@@ -77,6 +79,7 @@ export default class DbData {
 			"inspireIds": dump?.inspireIds ?? '',
 			"monumentStatus": dump?.monumentStatus ?? '',
 			"otherThen": dump?.otherThen ?? '',
+			"street": dump?.street ?? '',
 			"typeLabels": dump?.types ?? '',
 			"item": dump.item.replace('Q',''),
 			// "town": (dump?.town ?? '-1').replace('Q',''),
