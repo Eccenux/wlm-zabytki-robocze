@@ -299,7 +299,7 @@ export default class MediaWikiDumper {
 
 	/** @private */
 	escape(value) {
-		return value.replace(/|/g, '⏐');	// avoid breaking wikitable
+		return value.replace(/\|/g, '⏐');	// avoid breaking wikitable
 	}
 
 	/** @private Main columns. */
