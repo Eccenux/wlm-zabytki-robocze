@@ -299,7 +299,10 @@ export default class MediaWikiDumper {
 
 	/** @private */
 	escape(value) {
-		return value.replace(/\|/g, '⏐');	// avoid breaking wikitable
+		if (typeof value === 'string') {
+			return value.replace(/\|/g, '⏐');	// avoid breaking wikitable
+		}
+		return value;
 	}
 
 	/** @private Main columns. */
@@ -322,8 +325,7 @@ export default class MediaWikiDumper {
 				.filter(h=>h.startsWith('agg_'))
 				.map((header) => {
 					const isQ = (header === 'agg_qid');
-					return row[header]
-						.map(v=>this.escape(v))
+					return this.escape(row[header])
 						.split(aggSeparator)
 						.map(v=>{
 							if (!v.length) {
