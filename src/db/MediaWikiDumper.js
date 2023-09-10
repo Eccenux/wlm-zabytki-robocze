@@ -73,6 +73,7 @@ export default class MediaWikiDumper {
 		const dt = new Date().toISOString().replace(/:/g, '.');
 		this.log = new Log(`./output/${dt}--db2mw.log`);
 
+        /** Number of repeated locations that gets into top. */
 		this.topBound = 4;
 	}
 
@@ -96,7 +97,7 @@ export default class MediaWikiDumper {
 		try {
 			// Execute the SQL query
 			const sql = `${sqlQuery}
-				having count(distinct item) > ${this.topBound}
+				having count(distinct item) >= ${this.topBound}
 				order by cnt desc
 				limit ${sqlLimit}
 			`;
@@ -134,7 +135,7 @@ export default class MediaWikiDumper {
 			// Execute the SQL query
 			const sql = `${sqlQuery}
 				having count(distinct item) > 1
-				AND	count(distinct item) <= ${this.topBound}
+				AND	count(distinct item) < ${this.topBound}
 				order by state, town, latlon, cnt desc
 			`;
 			const result = await this.db.many(sql);
