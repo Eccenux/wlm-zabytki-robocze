@@ -5,3 +5,4 @@ output/*
 *.priv
 output*.wiki
 bot.config.mjs
+temp*.*
