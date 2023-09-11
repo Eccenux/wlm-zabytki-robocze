@@ -153,8 +153,11 @@ export default class MediaWikiDumper {
 			const remover = new FileRemover();
 			await remover.removeFiles(outputDir, /woj.+\.wiki/);
 
+			// filter rows
+			const filteredRows = result.filter(row=>this.showRow(row));
+
 			// Save by states
-			const stateMap = this.splitBytState(result);
+			const stateMap = this.splitBytState(filteredRows);
 			const states = Object.keys(stateMap);
 			const info = {
 				list : [],
@@ -348,7 +351,50 @@ export default class MediaWikiDumper {
 		;
 	}
 
-	/** @private */
+	/**
+	 * Check if row should go into the table.
+	 * 
+	 * This is for checking if work on the row is not done yet.
+	 * 
+	 * Don't show groups that all have iid and all iid are unique.
+	 * So also any empty iid means the group will be shown.
+	 * 
+	 * @private
+	 * 
+	 * @param {Object} row 
+	 * @returns 
+	 */
+	showRow(row) {
+		if (!('agg_inspireid' in row)) {
+			return true;
+		}
+		const idList = row.agg_inspireid.split(aggSeparator);
+		// empty value means we want to show the group add inspire
+		let empty = idList.includes('');
+		if (empty) {
+			return true;
+		}
+		// check if any inspire ids repeat this gives strong possiblity of duplicates
+		const qList = row.agg_qid.split(aggSeparator);
+		for (let i = 0; i < idList.length; i++) {
+			const iid = idList[i];
+			const q = qList[i];
+			for (let j = i+1; j < idList.length; j++) {
+				const next = idList[j];
+				const qNext = qList[j];
+				// make sure this is not the same Q
+				if (q === qNext) {
+					continue;
+				}
+				if (iid === next) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+    /** @private */
 	vInspire(v) {
 		return v
 			.split(',')

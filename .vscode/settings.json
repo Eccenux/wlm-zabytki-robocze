@@ -8,5 +8,8 @@
 	"files.associations": {
 		"*.sql": "postgres"
 	},
-	"editor.detectIndentation": false
+	"editor.detectIndentation": false,
+    "editor.insertSpaces": false,
+    "editor.useTabStops": true,
+    "editor.tabSize": 4
 }

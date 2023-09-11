@@ -12,7 +12,10 @@ https://pl.wikipedia.org/wiki/Wikipedysta:Nux/test_WLZ_dok%C5%82adno%C5%9B%C4%87
 ## TODO
 - [x] purge main `WLZ duplikaty` after deploying lists
 - mark as done
-	- skip groups that all have iid and all iid are unique (any empty/null means the group will not be skipped)
+	- [x] skip groups that all have iid and all iid are unique (any empty/null means the group will not be skipped)
+		- [x] basic test and function `showRow()`
+		- [x] also check for rare cases were Q is repeated
+		- [x] check if row should be shown, but only for `states()`; not for `top()` -- in top we check for invalid location
 	- [xor] skip `part-of` for two-item duplicate
 	- [xor] skip `is-different-then` (P1889) if all in group are different
 		E.g.:
