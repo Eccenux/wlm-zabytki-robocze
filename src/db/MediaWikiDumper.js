@@ -8,7 +8,7 @@ import FileRemover from "../FileRemover.js";
 
 // Define the SQL query
 // const sqlQuery = fs.readFileSync('./src/db/find.dupl.sql');
-const sqlLimit = 50;
+const sqlLimit = 100;
 const sqlNameMap = {
 	'latlon': 'lokalizacja',
 	'town': 'miasto',
