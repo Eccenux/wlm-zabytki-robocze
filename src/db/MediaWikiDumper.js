@@ -74,7 +74,7 @@ export default class MediaWikiDumper {
 		this.log = new Log(`./output/${dt}--db2mw.log`);
 
         /** Number of repeated locations that gets into top. */
-		this.topBound = 4;
+		this.topBound = 3;
 	}
 
 	/** @private init */
