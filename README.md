@@ -16,8 +16,8 @@ https://pl.wikipedia.org/wiki/Wikipedysta:Nux/test_WLZ_dok%C5%82adno%C5%9B%C4%87
 		- [x] basic test and function `showRow()`
 		- [x] also check for rare cases were Q is repeated
 		- [x] check if row should be shown, but only for `states()`; not for `top()` -- in top we check for invalid location
-	- [xor] skip `part-of` for two-item duplicate
-	- [xor] skip `is-different-then` (P1889) if all in group are different
+	- [or?] skip `part-of` for two-item duplicate
+	- [or?] skip `is-different-then` (P1889) if all in group are different
 		E.g.:
 		https://www.wikidata.org/wiki/Q30049639
 		https://www.wikidata.org/wiki/Q30049640
@@ -26,6 +26,7 @@ https://pl.wikipedia.org/wiki/Wikipedysta:Nux/test_WLZ_dok%C5%82adno%C5%9B%C4%87
 		Q30049642
 		Q30049645
 		Q30049646 
+- dump groups with unique inspire id?
 - gadet for mark as done? or just use `qsOtherThen.js`?
 - gadet for replacing locations? (based on `wdApi.notes.js`)
 - BTW. jenkins-data repo (local)

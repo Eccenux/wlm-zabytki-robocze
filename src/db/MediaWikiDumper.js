@@ -125,6 +125,45 @@ export default class MediaWikiDumper {
 	}
 
 	/**
+	 * Dump groups with unique inspire id.
+	 */
+	async listInspired() {
+		if (this.initDone === false) {
+			this.init();
+		}
+		try {
+			// Execute the SQL query
+			const sql = `${sqlQuery}
+				having count(distinct item) >= 2
+				order by cnt desc
+			`;
+			const result = await this.db.many(sql);
+			if (!Array.isArray(result)) {
+				throw "Unexpected result";
+			}
+
+			// filter rows
+			const filteredRows = result.filter(row=>this.inspiredRow(row));
+
+			// Format the result as a MediaWiki table
+			const wikitable = this.formatAsTable(filteredRows, sqlNameMap);
+			const count = filteredRows.length;
+			let wiki = `== Inspirowane ==\n__NOTOC__\n[${count}] (grupy pełne inspire id)\n`;
+			wiki += wikiSectionHeader;
+			wiki += wikitable;
+			wiki += wikiSectionFooter;
+
+			// Write the MediaWiki table to a file
+			const output = 'output_inspire.wiki';
+			fs.writeFileSync(output, wiki);
+
+			console.log(`Wikitable with %d base row(s) saved to ${output}`, result.length);
+		} catch (error) {
+			console.error('Error dumping data to MediaWiki table:', error);
+		}
+	}
+
+	/**
 	 * Dump ~all by state.
 	 */
 	async states() {
@@ -392,6 +431,50 @@ export default class MediaWikiDumper {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Check if the row is fully inspired.
+	 * 
+	 * Row/group is inspired if all items have unique inspire id.
+	 * 
+	 * @private
+	 * 
+	 * @param {Object} row 
+	 * @returns 
+	 */
+	inspiredRow(row) {
+		if (!('agg_inspireid' in row)) {
+			return false;
+		}
+		// reject mulptiple inspire in one id
+		if (row.agg_inspireid.indexOf(',') > 0) {
+			return false;
+		}
+		const idList = row.agg_inspireid.split(aggSeparator);
+		// empty value means we want to show the group add inspire
+		let empty = idList.includes('');
+		if (empty) {
+			return false;
+		}
+		// check if any inspire ids repeat this gives strong possiblity of duplicates
+		const qList = row.agg_qid.split(aggSeparator);
+		for (let i = 0; i < idList.length; i++) {
+			const iid = idList[i];
+			const q = qList[i];
+			for (let j = i+1; j < idList.length; j++) {
+				const next = idList[j];
+				const qNext = qList[j];
+				// make sure this is not the same Q
+				if (q === qNext) {
+					continue;
+				}
+				if (iid === next) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
     /** @private */

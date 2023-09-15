@@ -100,4 +100,91 @@ describe('MediaWikiDumper', () => {
 			assert.equal(result, expected);
 		});
 	});
+
+	describe('inspiredRow', () => {
+		let dumper = new MediaWikiDumper();
+		let result;
+		let expected;
+		let row;
+		it('all inspire std', () => {
+			row = baseRow(
+				['Q1', 'Q2'],
+				['PL1', 'PL2'],
+			);
+			expected = true;
+			result = dumper.inspiredRow(row);
+			assert.equal(result, expected);
+		});
+		it('some missing', () => {
+			row = baseRow(
+				['Q1', 'Q2'],
+				['PL1', ''],
+			);
+			expected = false;
+			result = dumper.inspiredRow(row);
+			assert.equal(result, expected);
+		});
+		it('all missing', () => {
+			row = baseRow(
+				['Q1', 'Q2'],
+				['', ''],
+			);
+			expected = false;
+			result = dumper.inspiredRow(row);
+			assert.equal(result, expected);
+		});
+		it('different Q same inspire', () => {
+			// this might indicate Q1 is the same things as Q2 and Q3
+			// so we want this to be shown in the tables
+			expected = false;
+			row = baseRow(
+				['Q1', 'Q2', 'Q3'],
+				['PL1', 'PL1', 'PL1'],
+			);
+			result = dumper.inspiredRow(row);
+			assert.equal(result, expected);
+
+			// this might indicate Q1 is the same thing as Q2
+			row = baseRow(
+				['Q1', 'Q2'],
+				['PL1', 'PL1'],
+			);
+			result = dumper.inspiredRow(row);
+			assert.equal(result, expected);
+
+			// this also might indicate Q1 is the same thing as Q2 (Q3 is probably different, but we show it for clarity)
+			row = baseRow(
+				['Q1', 'Q2', 'Q3'],
+				['PL1', 'PL1', 'PL2'],
+			);
+			result = dumper.inspiredRow(row);
+			assert.equal(result, expected);
+		});
+		it('repeated Q but different inspire', () => {
+			row = baseRow(
+				['Q1', 'Q1', 'Q2'],
+				['PL1', 'PL1', 'PL2'],
+			);
+			expected = true;
+			result = dumper.inspiredRow(row);
+			assert.equal(result, expected);
+		});
+		it('multi inpire in any Q', () => {
+			expected = false;
+
+			row = baseRow(
+				['Q1', 'Q2', 'Q3'],
+				['PL1', 'PL1,PL2', 'PL2'],
+			);
+			result = dumper.inspiredRow(row);
+			assert.equal(result, expected);
+
+			row = baseRow(
+				['Q1', 'Q2', 'Q3'],
+				['PL1', 'PL2', 'PL3,PL4'],
+			);
+			result = dumper.inspiredRow(row);
+			assert.equal(result, expected);
+		});
+	});
 });

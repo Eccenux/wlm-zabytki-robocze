@@ -52,6 +52,13 @@ function pageTitle(file) {
 		dst: 'Wikipedysta:NuxBot/WLZ duplikaty/top',
 	}));
 
+	// inspired config
+	configs.push(new DeployConfig({
+		src: 'output_inspire.wiki',
+		dst: 'Wikipedysta:NuxBot/WLZ duplikaty/inspirowane',
+	}));
+	
+
 	// execute
 	await ployBot.deploy(configs);
 

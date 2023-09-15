@@ -10,6 +10,7 @@ const mediaWikiDumper = new MediaWikiDumper();
 // Connect to the database and dump the result as a MediaWiki table
 try {
 	await mediaWikiDumper.top();
+	await mediaWikiDumper.listInspired();
 	await mediaWikiDumper.states();
 } catch (error) {
 	console.error(error);
