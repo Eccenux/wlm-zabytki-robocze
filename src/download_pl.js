@@ -12,12 +12,12 @@ import FileRemover from './FileRemover.js';
 	https://w.wiki/7M9G
 */
 const boundaries = {
-	// "southWest":{"lng":14.09002, "lat":48.87194},
-	// "northEast":{"lng":24.19078, "lat":54.88292},
-	// wydajność
-	"southWest":{"lng":20.0, "lat":48.87194},
-	"northEast":{"lng":20.5, "lat":54.88292},
-	// Legnica
+	"southWest":{"lng":14.09002, "lat":48.87194},
+	"northEast":{"lng":24.19078, "lat":54.88292},
+	// test wydajności
+	// "southWest":{"lng":20.0, "lat":48.87194},
+	// "northEast":{"lng":20.5, "lat":54.88292},
+	// test: Legnica
 	// "southWest":{"lng":16.10, "lat":51.15},
 	// "northEast":{"lng":16.18, "lat":51.23},
 }
