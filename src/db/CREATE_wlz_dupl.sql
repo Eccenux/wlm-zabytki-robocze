@@ -12,6 +12,7 @@ CREATE TABLE public.wlz_dupl
     townLabel TEXT,
     stateLabel TEXT,
     monumentStatus TEXT,
+    hasPart TEXT,
     otherThen TEXT,
     street TEXT,
     inspireIds TEXT

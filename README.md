@@ -16,7 +16,11 @@ https://pl.wikipedia.org/wiki/Wikipedysta:Nux/test_WLZ_dok%C5%82adno%C5%9B%C4%87
 		- [x] basic test and function `showRow()`
 		- [x] also check for rare cases were Q is repeated
 		- [x] check if row should be shown, but only for `states()`; not for `top()` -- in top we check for invalid location
-	- [or?] skip `part-of` for two-item duplicate
+	- [or?] for two-item duplicate skip part-parent
+		- P527 (składa się z; has part).
+		- E.g.: https://www.wikidata.org/wiki/Q30583403 (zespół) składa się z Q30583404 (dom).
+		- [x] Download P527 and save as hasPart.
+		- [] For two-element group check if hasPart is non-empty and contains the other item.
 	- [or?] skip `is-different-then` (P1889) if all in group are different
 		E.g.:
 		https://www.wikidata.org/wiki/Q30049639

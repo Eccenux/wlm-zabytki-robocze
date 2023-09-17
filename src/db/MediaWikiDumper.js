@@ -19,7 +19,7 @@ const sqlNameMap = {
 	'agg_type': 'typ obiektu',
 	'agg_status': 'status dobra kultury',
 	'agg_item': 'etykieta',
-	'agg_other': 'inne niż',
+	// 'agg_other': 'inne niż',
 	'agg_street': 'ulica',
 }
 const aggSeparator = ' ;; ';
@@ -31,6 +31,7 @@ select concat(lat_, ':' , lon_) as latlon
 	, count(distinct item) as cnt
 	, array_to_string(array_agg(item ORDER BY item), '${aggSeparator}') as agg_qid
 	, array_to_string(array_agg(inspireIds ORDER BY item), '${aggSeparator}') as agg_inspireid
+	, array_to_string(array_agg(hasPart ORDER BY item), '${aggSeparator}') as hasPart
 	, array_to_string(array_agg(otherThen ORDER BY item), '${aggSeparator}') as agg_other
 	, array_to_string(array_agg(typeLabels ORDER BY item), '${aggSeparator}') as agg_type
 	, array_to_string(array_agg(monumentStatus ORDER BY item), '${aggSeparator}') as agg_status
@@ -45,6 +46,7 @@ from (
 	, inspireIds
 	, typeLabels
 	, monumentStatus
+	, hasPart
 	, otherThen
 	, street
 	FROM public.wlz_dupl
