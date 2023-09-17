@@ -120,8 +120,9 @@ export default class MediaWikiDumper {
 			wiki += wikiSectionFooter;
 
 			// Write the MediaWiki table to a file
-			const output = 'output_top.wiki';
-			fs.writeFileSync(output, wiki);
+			const outputDir = this.initOutput();
+			const output = 'a_top.wiki';
+			fs.writeFileSync(path.join(outputDir, output), wiki);
 
 			console.log(`Wikitable with %d base row(s) saved to ${output}`, result.length);
 		} catch (error) {
@@ -159,13 +160,24 @@ export default class MediaWikiDumper {
 			wiki += wikiSectionFooter;
 
 			// Write the MediaWiki table to a file
-			const output = 'output_inspire.wiki';
-			fs.writeFileSync(output, wiki);
+			const outputDir = this.initOutput();
+			const output = 'a_inspire.wiki';
+			fs.writeFileSync(path.join(outputDir, output), wiki);
 
 			console.log(`Wikitable with %d base row(s) saved to ${output}`, result.length);
 		} catch (error) {
 			console.error('Error dumping data to MediaWiki table:', error);
 		}
+	}
+
+	/** @private create and return output dir. */
+	initOutput() {
+		const outputDir = './output/mw/';
+		// create
+		if (!fs.existsSync(outputDir)) {
+			fs.mkdirSync(outputDir, { recursive: true });
+		}
+		return outputDir;
 	}
 
 	/**
@@ -187,11 +199,7 @@ export default class MediaWikiDumper {
 				throw "Unexpected result";
 			}
 
-			const outputDir = './output/mw/';
-			// create
-			if (!fs.existsSync(outputDir)) {
-				fs.mkdirSync(outputDir, { recursive: true });
-			}
+			const outputDir = this.initOutput();
 	
 			// Clear output
 			const remover = new FileRemover();
@@ -237,14 +245,9 @@ export default class MediaWikiDumper {
 				info.include.push(`{{${title}}}`);
 			}
 
-			// // merge files
-			// const fileMerger = new FileMerger(outputDir);
-			// const filterWikiFiles = (file) => file.startsWith('woj') && file.endsWith('.wiki');
-			// fileMerger.mergeFiles('output_woj.wiki', filterWikiFiles);
-
 			// summary/includes
-			fs.writeFileSync('output_states_list.wiki', info.list.join('\n'));
-			fs.writeFileSync('output_states_all.wiki', info.include.join('\n'));
+			fs.writeFileSync(path.join(outputDir, 'a_states_list.wiki'), info.list.join('\n'));
+			fs.writeFileSync(path.join(outputDir, 'a_states_all.wiki'), info.include.join('\n'));
 			console.log('Summary: %d files with %d base rows.', info.list.length, info.total);
 		} catch (error) {
 			console.error('Error dumping data to MediaWiki table:', error);

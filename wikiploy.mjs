@@ -37,24 +37,24 @@ function pageTitle(file) {
 
 	// summary config
 	configs.push(new DeployConfig({
-		src: 'output_states_list.wiki',
+		src: path.join(dirPath, 'a_states_list.wiki'),
 		dst: pageTitle('lista.wiki'),
 	}));
 	configs.push(new DeployConfig({
-		src: 'output_states_all.wiki',
+		src: path.join(dirPath, 'a_states_all.wiki'),
 		dst: pageTitle('wszystko.wiki'),
 	}));
 	/**/
 
 	// top config
 	configs.push(new DeployConfig({
-		src: 'output_top.wiki',
+		src: path.join(dirPath, 'a_top.wiki'),
 		dst: 'Wikipedysta:NuxBot/WLZ duplikaty/top',
 	}));
 
 	// inspired config
 	configs.push(new DeployConfig({
-		src: 'output_inspire.wiki',
+		src: path.join(dirPath, 'a_inspire.wiki'),
 		dst: 'Wikipedysta:NuxBot/WLZ duplikaty/inspirowane',
 	}));
 	
