@@ -330,7 +330,7 @@ export default class MediaWikiDumper {
 			// const aggCount = row['rowCount'].split(aggSeparator).length;
 			const aggCount = row['rowcount'];
 			// init row 1st
-			table += '\n|-';
+			table += `\n|- <!-- ${row.agg_qid} -->`;
 			// add non-agg with rowspan
 			let values, column;
 			values = this.transformMain(row, headers);
@@ -474,6 +474,7 @@ export default class MediaWikiDumper {
 	 * @returns 
 	 */
 	showRowByParts(row) {
+		// if (row) return true;
 		if (!('agg_haspart' in row) || row.agg_haspart.length < 1) {
 			return true;
 		}
@@ -512,6 +513,7 @@ export default class MediaWikiDumper {
 	 * @returns 
 	 */
 	showRowByPartOf(row) {
+		// if (row) return true;
 		if (!('agg_ispartof' in row) || row.agg_ispartof.length < 1) {
 			return true;
 		}
