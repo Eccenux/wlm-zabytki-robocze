@@ -4,5 +4,5 @@ output/*
 *.priv.*
 *.priv
 output*.wiki
-bot.config.mjs
+*bot.config.mjs
 temp*.*

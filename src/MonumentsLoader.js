@@ -1,4 +1,5 @@
 import { downAccuracy, ceilAccuracy } from './MapHelpers.js';
+import { utils } from 'wdbot';
 import fs from 'fs';
 import path from 'path';
 /**
@@ -20,6 +21,8 @@ export class MonumentsLoader {
 	 * Load many in boundaries.
 	 */
 	async loadMany(boundaries, max = 3) {
+		const startTime = performance.now();
+
 		let lon1 = boundaries.southWest.lng;
 		let limiter = () => false;
 		if (max > 0) {
@@ -63,6 +66,9 @@ export class MonumentsLoader {
 		// summary
 		console.log('Done in %d steps', steps);
 		console.log('Total records: %d; Qids: %d.', total, qids.size);
+		const elapsed = utils.formatTime(startTime, performance.now());
+		const elapsedPerRecord = utils.formatTime(startTime, performance.now(), total);
+		console.log(`Elapsed time for loadMany: ${elapsed} (per record: ${elapsedPerRecord}).`);
 	}
 
 	/**
