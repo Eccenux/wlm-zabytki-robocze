@@ -50,6 +50,7 @@ from (
 	, otherThen
 	, street
 	FROM public.wlz_dupl
+	where typeLabels !~ 'nieistniejący'
 ) as t
 group by lat_, lon_
 `;
@@ -493,6 +494,9 @@ export default class MediaWikiDumper {
 	 * @returns 
 	 */
 	inspiredRow(row) {
+		if (!this.showRowByParts(row)) {
+			return false;
+		}
 		if (!('agg_inspireid' in row)) {
 			return false;
 		}
