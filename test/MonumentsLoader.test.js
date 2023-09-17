@@ -19,6 +19,7 @@ describe('MonumentsLoader', () => {
 				inspireIds:     {type: 'literal', value: 'PL.1.9.ZIPOZ.NID_N_02_BK.85004'},
 				monumentStatus: {type: 'literal', value: 'zabytek nieruchomy'},
 				hasPart:      {type: 'literal', value: 'http://www.wikidata.org/entity/Q123, http://www.wikidata.org/entity/Q456'},
+				isPartOf:      {type: 'literal', value: 'http://www.wikidata.org/entity/Q789'},
 				otherThen:      {type: 'literal', value: 'http://www.wikidata.org/entity/Q123, http://www.wikidata.org/entity/Q456'},
 				street:         {type: 'literal', value: 'Myśliwska 8/9'},
 			};
@@ -35,6 +36,7 @@ describe('MonumentsLoader', () => {
 				inspireIds:     'PL.1.9.ZIPOZ.NID_N_02_BK.85004',
 				monumentStatus: 'zabytek nieruchomy',
 				hasPart:      'Q123, Q456',
+				isPartOf:      'Q789',
 				otherThen:      'Q123, Q456',
 				street:         'Myśliwska 8/9',
 			};
@@ -56,6 +58,7 @@ describe('MonumentsLoader', () => {
 				"state": {},
 				"stateLabel": {},
 				hasPart: {},
+				isPartOf: {},
 				otherThen: {},
 				street: {},
 			};
@@ -71,6 +74,7 @@ describe('MonumentsLoader', () => {
 				"state": undefined,
 				"stateLabel": undefined,
 				hasPart: undefined,
+				isPartOf: undefined,
 				otherThen: undefined,
 				street: undefined,
 			};

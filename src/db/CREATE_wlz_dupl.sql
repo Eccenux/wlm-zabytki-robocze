@@ -13,6 +13,7 @@ CREATE TABLE public.wlz_dupl
     stateLabel TEXT,
     monumentStatus TEXT,
     hasPart TEXT,
+    isPartOf TEXT,
     otherThen TEXT,
     street TEXT,
     inspireIds TEXT

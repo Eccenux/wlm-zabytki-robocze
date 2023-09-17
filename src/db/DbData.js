@@ -50,6 +50,7 @@ export default class DbData {
 				, inspireIds
 				, monumentStatus
 				, hasPart
+				, isPartOf
 				, otherThen
 				, street
 			)
@@ -62,6 +63,7 @@ export default class DbData {
 				, $<inspireIds>
 				, $<monumentStatus>
 				, $<hasPart>
+				, $<isPartOf>
 				, $<otherThen>
 				, $<street>
 			)
@@ -81,6 +83,7 @@ export default class DbData {
 			"inspireIds": dump?.inspireIds ?? '',
 			"monumentStatus": dump?.monumentStatus ?? '',
 			"hasPart": dump?.hasPart ?? '',
+			"isPartOf": dump?.isPartOf ?? '',
 			"otherThen": dump?.otherThen ?? '',
 			"street": dump?.street ?? '',
 			"typeLabels": dump?.types ?? '',
