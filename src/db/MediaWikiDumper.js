@@ -111,9 +111,20 @@ export default class MediaWikiDumper {
 				throw "Unexpected result";
 			}
 
+			// filter rows
+			const filteredRows = result.filter(row=>{
+				if (!this.showRowByParts(row)) {
+					return false;
+				}
+				if (!this.showRowByPartOf(row)) {
+					return false;
+				}
+				return true;
+			});
+
 			// Format the result as a MediaWiki table
-			const wikitable = this.formatAsTable(result, sqlNameMap);
-			const count = result.length;
+			const wikitable = this.formatAsTable(filteredRows, sqlNameMap);
+			const count = filteredRows.length;
 			let wiki = `== TOP ==\n__NOTOC__\nTop${count} (najwięcej powtórznych lokalizacji)\n`;
 			wiki += wikiSectionHeader;
 			wiki += wikitable;
@@ -124,7 +135,7 @@ export default class MediaWikiDumper {
 			const output = 'a_top.wiki';
 			fs.writeFileSync(path.join(outputDir, output), wiki);
 
-			console.log(`Wikitable with %d base row(s) saved to ${output}`, result.length);
+			console.log(`Wikitable with %d base row(s) saved to ${output}`, filteredRows.length);
 		} catch (error) {
 			console.error('Error dumping data to MediaWiki table:', error);
 		}
@@ -530,6 +541,9 @@ export default class MediaWikiDumper {
 	 */
 	inspiredRow(row) {
 		if (!this.showRowByParts(row)) {
+			return false;
+		}
+		if (!this.showRowByPartOf(row)) {
 			return false;
 		}
 		if (!('agg_inspireid' in row)) {
