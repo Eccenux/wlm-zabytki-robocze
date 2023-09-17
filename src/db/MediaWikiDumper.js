@@ -31,7 +31,7 @@ select concat(lat_, ':' , lon_) as latlon
 	, count(distinct item) as cnt
 	, array_to_string(array_agg(item ORDER BY item), '${aggSeparator}') as agg_qid
 	, array_to_string(array_agg(inspireIds ORDER BY item), '${aggSeparator}') as agg_inspireid
-	, array_to_string(array_agg(hasPart ORDER BY item), '${aggSeparator}') as hasPart
+	, array_to_string(array_agg(hasPart ORDER BY item), '${aggSeparator}') as agg_haspart
 	, array_to_string(array_agg(otherThen ORDER BY item), '${aggSeparator}') as agg_other
 	, array_to_string(array_agg(typeLabels ORDER BY item), '${aggSeparator}') as agg_type
 	, array_to_string(array_agg(monumentStatus ORDER BY item), '${aggSeparator}') as agg_status
@@ -392,8 +392,16 @@ export default class MediaWikiDumper {
 		;
 	}
 
+	/** @private */
+	showRow(row) {
+		let show = this.showRowByInspire(row);
+		if (show) {
+			show = this.showRowByParts(row);
+		}
+		return show;
+	}
 	/**
-	 * Check if row should go into the table.
+	 * Check if row should go into the table (by inspire id).
 	 * 
 	 * This is for checking if work on the row is not done yet.
 	 * 
@@ -405,7 +413,7 @@ export default class MediaWikiDumper {
 	 * @param {Object} row 
 	 * @returns 
 	 */
-	showRow(row) {
+	showRowByInspire(row) {
 		if (!('agg_inspireid' in row)) {
 			return true;
 		}
@@ -434,6 +442,45 @@ export default class MediaWikiDumper {
 		}
 		return false;
 	}
+
+	/**
+	 * Check if row should go into the table (by hasPart).
+	 * 
+	 * This is for checking if work on the row is not done yet.
+	 * 
+	 * @private
+	 * 
+	 * @param {Object} row 
+	 * @returns 
+	 */
+	showRowByParts(row) {
+		if (!('agg_haspart' in row) || row.agg_haspart.length < 1) {
+			return true;
+		}
+		const idList = row.agg_haspart.split(aggSeparator);
+		let nonempty = idList.map((v,i)=>({v,i})).filter(e=>e.v.length);
+		// skip when there is more then one parent
+		if (nonempty.length != 1) {
+			return true;
+		}
+		let parent = nonempty[0];
+		parent.v = parent.v.split(',');
+		// check if other items in the group are children
+		const qList = row.agg_qid.split(aggSeparator).map(v=>v.startsWith('Q') ? v : 'Q'+v);
+		const expectedCount = qList.length - 1;
+		let foundCount = 0;
+		for (let i = 0; i < qList.length; i++) {
+			if (parent.i === i) {
+				continue;
+			}
+			const q = qList[i];
+			if (parent.v.indexOf(q) >= 0) {
+				foundCount++;
+			}
+		}
+		return foundCount !== expectedCount;
+	}
+
 
 	/**
 	 * Check if the row is fully inspired.

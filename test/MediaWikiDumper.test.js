@@ -31,7 +31,7 @@ function baseRow(qList, inspireList) {
 	};
 }
 describe('MediaWikiDumper', () => {
-	describe('showRow', () => {
+	describe('showRowByInspire', () => {
 		let dumper = new MediaWikiDumper();
 		let result;
 		let expected;
@@ -96,6 +96,68 @@ describe('MediaWikiDumper', () => {
 				['PL1', 'PL1', 'PL2'],
 			);
 			expected = false;
+			result = dumper.showRow(row);
+			assert.equal(result, expected);
+		});
+	});
+	describe('showRowByParts', () => {
+		let dumper = new MediaWikiDumper();
+		let result;
+		let expected;
+		let row;
+	
+		it('all other matched', () => {
+			expected = false;	// don't show / skip
+
+			row = baseRow(
+				['1', '2'],
+				['', ''],
+			);
+			row.agg_haspart = ['Q2', ''].join(aggSeparator),
+			result = dumper.showRow(row);
+			assert.equal(result, expected);
+
+			row = baseRow(
+				['1', '2'],
+				['', ''],
+			);
+			row.agg_haspart = ['', 'Q1'].join(aggSeparator),
+			result = dumper.showRow(row);
+			assert.equal(result, expected);
+
+			row = baseRow(
+				['1', '2'],
+				['', ''],
+			);
+			row.agg_haspart = ['', 'Q23,Q1,Q7'].join(aggSeparator),
+			result = dumper.showRow(row);
+			assert.equal(result, expected);
+
+			row = baseRow(
+				['1', '2', '3'],
+				['', '', ''],
+			);
+			row.agg_haspart = ['', '', 'Q23,Q1,Q2'].join(aggSeparator),
+			result = dumper.showRow(row);
+			assert.equal(result, expected);
+		});
+		// only prefix is matched, not whole Q
+		it('same prefix only', () => {
+			expected = true;	// show
+
+			row = baseRow(
+				['Q1', 'Q2'],
+				['', ''],
+			);
+			row.agg_haspart = ['', 'Q123'].join(aggSeparator),
+			result = dumper.showRow(row);
+			assert.equal(result, expected);
+
+			row = baseRow(
+				['Q1', 'Q2'],
+				['', ''],
+			);
+			row.agg_haspart = ['Q23', ''].join(aggSeparator),
 			result = dumper.showRow(row);
 			assert.equal(result, expected);
 		});
