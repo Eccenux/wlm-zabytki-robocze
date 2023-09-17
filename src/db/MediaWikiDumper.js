@@ -32,6 +32,7 @@ select concat(lat_, ':' , lon_) as latlon
 	, array_to_string(array_agg(item ORDER BY item), '${aggSeparator}') as agg_qid
 	, array_to_string(array_agg(inspireIds ORDER BY item), '${aggSeparator}') as agg_inspireid
 	, array_to_string(array_agg(hasPart ORDER BY item), '${aggSeparator}') as agg_haspart
+	, array_to_string(array_agg(isPartOf ORDER BY item), '${aggSeparator}') as agg_ispartof
 	, array_to_string(array_agg(otherThen ORDER BY item), '${aggSeparator}') as agg_other
 	, array_to_string(array_agg(typeLabels ORDER BY item), '${aggSeparator}') as agg_type
 	, array_to_string(array_agg(monumentStatus ORDER BY item), '${aggSeparator}') as agg_status
@@ -47,6 +48,7 @@ from (
 	, typeLabels
 	, monumentStatus
 	, hasPart
+	, isPartOf
 	, otherThen
 	, street
 	FROM public.wlz_dupl
@@ -398,6 +400,9 @@ export default class MediaWikiDumper {
 		let show = this.showRowByInspire(row);
 		if (show) {
 			show = this.showRowByParts(row);
+			if (show) {
+				show = this.showRowByPartOf(row);
+			}
 		}
 		return show;
 	}
@@ -482,6 +487,33 @@ export default class MediaWikiDumper {
 		return foundCount !== expectedCount;
 	}
 
+	/**
+	 * Check if row should go into the table (by isPartOf).
+	 * 
+	 * This is for checking if work on the row is not done yet.
+	 * 
+	 * @private
+	 * 
+	 * @param {Object} row 
+	 * @returns 
+	 */
+	showRowByPartOf(row) {
+		if (!('agg_ispartof' in row) || row.agg_ispartof.length < 1) {
+			return true;
+		}
+		const idList = row.agg_ispartof.split(aggSeparator);
+		// all must have parents
+		let empty = idList.includes('');
+		if (empty) {
+			return true;
+		}
+		// skip when there is more then one parent
+		const parent = idList[0];
+		if (idList.findIndex((v)=>v!=parent) >= 0) {
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Check if the row is fully inspired.

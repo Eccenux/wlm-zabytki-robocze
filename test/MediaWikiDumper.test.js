@@ -162,6 +162,70 @@ describe('MediaWikiDumper', () => {
 			assert.equal(result, expected);
 		});
 	});
+	describe('showRowByPartOf', () => {
+		let dumper = new MediaWikiDumper();
+		let result;
+		let expected;
+		let row;
+	
+		it('common parent', () => {
+			expected = false;	// don't show / skip
+
+			row = baseRow(
+				['1', '2'],
+				['', ''],
+			);
+			row.agg_ispartof = ['Q3', 'Q3'].join(aggSeparator),
+			result = dumper.showRow(row);
+			assert.equal(result, expected);
+
+			row = baseRow(
+				['1', '2', '3'],
+				['', '', ''],
+			);
+			row.agg_ispartof = ['Q4', 'Q4', 'Q4'].join(aggSeparator),
+			result = dumper.showRow(row);
+			assert.equal(result, expected);
+		});
+		it('different parent', () => {
+			expected = true;	// show
+
+			row = baseRow(
+				['Q1', 'Q2'],
+				['', ''],
+			);
+			row.agg_ispartof = ['Q3', 'Q4'].join(aggSeparator),
+			result = dumper.showRow(row);
+			assert.equal(result, expected);
+
+			row = baseRow(
+				['1', '2', '3'],
+				['', '', ''],
+			);
+			row.agg_ispartof = ['Q4', 'Q4', 'Q5'].join(aggSeparator),
+			result = dumper.showRow(row);
+			assert.equal(result, expected);
+		});
+		it('missing parent', () => {
+			expected = true;	// show
+
+			row = baseRow(
+				['Q1', 'Q2'],
+				['', ''],
+			);
+			row.agg_ispartof = ['Q3', ''].join(aggSeparator),
+			result = dumper.showRow(row);
+			assert.equal(result, expected);
+
+			row = baseRow(
+				['1', '2', '3'],
+				['', '', ''],
+			);
+			row.agg_ispartof = ['Q4', 'Q4', ''].join(aggSeparator),
+			result = dumper.showRow(row);
+			assert.equal(result, expected);
+		});
+	});
 
 	describe('inspiredRow', () => {
 		let dumper = new MediaWikiDumper();
