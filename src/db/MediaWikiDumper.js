@@ -106,7 +106,7 @@ export default class MediaWikiDumper {
 				order by cnt desc
 				limit ${sqlLimit}
 			`;
-			const result = await this.db.many(sql);
+			const result = await this.db.manyOrNone(sql);
 			if (!Array.isArray(result)) {
 				throw "Unexpected result";
 			}
@@ -154,7 +154,7 @@ export default class MediaWikiDumper {
 				having count(distinct item) >= 2
 				order by cnt desc
 			`;
-			const result = await this.db.many(sql);
+			const result = await this.db.manyOrNone(sql);
 			if (!Array.isArray(result)) {
 				throw "Unexpected result";
 			}
@@ -205,7 +205,7 @@ export default class MediaWikiDumper {
 				AND	count(distinct item) < ${this.topBound}
 				order by state, town, latlon, cnt desc
 			`;
-			const result = await this.db.many(sql);
+			const result = await this.db.manyOrNone(sql);
 			if (!Array.isArray(result)) {
 				throw "Unexpected result";
 			}
@@ -321,6 +321,10 @@ export default class MediaWikiDumper {
 
 	/** @private */
 	formatAsTable(rows, nameMap) {
+		if (!rows || !rows.length) {
+			return '';
+		}
+
 		let table = '{| class="topalign"\n';
 		const headers = Object.keys(rows[0]).filter((h)=>h in nameMap);
 		const headerNames = headers.map((h)=>nameMap[h]);
@@ -474,6 +478,9 @@ export default class MediaWikiDumper {
 	 * @returns 
 	 */
 	showRowByParts(row) {
+		// if (row.agg_street.indexOf('Wigury 12')>=0) {
+		// 	console.log(row);
+		// }
 		// if (row) return true;
 		if (!('agg_haspart' in row) || row.agg_haspart.length < 1) {
 			return true;
@@ -485,7 +492,7 @@ export default class MediaWikiDumper {
 			return true;
 		}
 		let parent = nonempty[0];
-		parent.v = parent.v.split(',');
+		parent.v = parent.v.split(',').map(v=>v.trim());
 		// check if other items in the group are children
 		const qList = row.agg_qid.split(aggSeparator).map(v=>v.startsWith('Q') ? v : 'Q'+v);
 		const expectedCount = qList.length - 1;

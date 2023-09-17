@@ -20,6 +20,10 @@ const boundaries = {
 	// test: Legnica
 	// "southWest":{"lng":16.10, "lat":51.15},
 	// "northEast":{"lng":16.18, "lat":51.23},
+	// test: Łódź
+	// 19.46331, 51.756575
+	// "southWest":{"lng":19.45, "lat":51.755},
+	// "northEast":{"lng":19.47, "lat":51.757},
 }
 
 try {
