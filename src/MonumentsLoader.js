@@ -15,6 +15,9 @@ export class MonumentsLoader {
 		this.lat1 = downAccuracy(lat1, 2);
 		this.lat2 = ceilAccuracy(lat2, 2);
 		this.outputDir = outputDir;
+
+		// https://meta.wikimedia.org/wiki/User-Agent_policy
+		this.userAgent = "NuxBot/1.0 (https://pl.wikipedia.org/wiki/Wikipedysta:NuxBot/WLZ_duplikaty; egil@wp.pl) MonumentsLoader/1.0";
 	}
 
 	/**
@@ -177,13 +180,25 @@ export class MonumentsLoader {
 				"Sec-Fetch-Dest": "empty",
 				"Sec-Fetch-Mode": "cors",
 				"Sec-Fetch-Site": "cross-site",
+				// could be 'Api-User-Agent' in a browser
+				// https://meta.wikimedia.org/wiki/User-Agent_policy#JavaScript
+				"User-Agent": this.userAgent,
 			},
 			"referrer": "https://zabytki.toolforge.org/",
 			"method": "GET",
 			"mode": "cors"
 		});
 
-		const data = await re.json();
+		let data, text;
+		try {
+			text = await re.text();
+			data = JSON.parse(text);
+		} catch (error) {
+			const status = re.status;
+			console.error(error);
+			console.error("response", {status, text});
+			throw new Error("Unable to query wikidata SPARQL.");
+		}
 		return this.constructor.transform(data);
 	}
 
