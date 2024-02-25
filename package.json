@@ -23,6 +23,6 @@
   "dependencies": {
     "pg-promise": "^11.5.4",
     "wdbot": "^0.1.0",
-    "wikiploy": "^1.5.3"
+    "wikiploy": "2.x"
   }
 }
