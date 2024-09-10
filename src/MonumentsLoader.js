@@ -41,6 +41,7 @@ export class MonumentsLoader {
 		let steps = 0;
 		const qids = new Set();
 		let total = 0;
+		console.log('Longitude range:', {start:lon1, end:boundaries.northEast.lng});
 		for (let lon2 = lon1 + step; lon2 < boundaries.northEast.lng; lon1 = lon2, lon2 += step) {
 			steps++;
 			let re = await this.load(lon1, lon2);
