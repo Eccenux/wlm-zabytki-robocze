@@ -58,7 +58,7 @@ group by lat_, lon_
 `;
 const wikiSectionHeader = /* xml */`
 <templatestyles src="Nux/wlz-duplikaty.css"/>
-<templatestyles src="Nux/szeroka-tabela.css"/>
+<templatestyles src="Large-table.css"/>
 <div class="tpl--wlz-duplikaty-off wide-wikitable sticky-top">
 Uwaga! Na mapie WLZ wyświetlają się wyłączenie zabytki ze statusem „zabytek nieruchomy”. Przyjmujemy, że powinno być tak:
 * status „zabytek nieruchomy” – zabytek jest w wojewódzkim rejestrze zabytków nieruchomych (czyli np. budynki, a nie wykopaliska);
