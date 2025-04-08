@@ -1,5 +1,5 @@
 import { downAccuracy, ceilAccuracy } from './MapHelpers.js';
-import { utils } from 'wdbot';
+import { utils } from './utils.js';
 import fs from 'fs';
 import path from 'path';
 /**
@@ -70,8 +70,8 @@ export class MonumentsLoader {
 		// summary
 		console.log('Done in %d steps', steps);
 		console.log('Total records: %d; Qids: %d.', total, qids.size);
-		const elapsed = utils.formatTime(startTime, performance.now());
-		const elapsedPerRecord = utils.formatTime(startTime, performance.now(), total);
+		const elapsed = utils.formatElapsedTime(startTime, performance.now());
+		const elapsedPerRecord = utils.formatElapsedTime(startTime, performance.now(), total);
 		console.log(`Elapsed time for loadMany: ${elapsed} (per record: ${elapsedPerRecord}).`);
 	}
 
