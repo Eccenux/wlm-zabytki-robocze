@@ -1,5 +1,5 @@
 import { downAccuracy, ceilAccuracy } from './MapHelpers.js';
-import { utils } from './utils.js';
+import * as utils from './utils.js';
 import fs from 'fs';
 import path from 'path';
 /**
