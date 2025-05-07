@@ -39,8 +39,11 @@ https://pl.wikipedia.org/wiki/Wikipedysta:Nux/test_WLZ_dok%C5%82adno%C5%9B%C4%87
 
 Główne skrypty:
 - `download_pl.js` -- skrypt do pobrania danych z WD (do plików json).
-- `dbInsert.js` -- skrypt do wstania jsonów do bazy danych (Postgres).
+- `dbInsert.js` -- skrypt do wstania jsonów do bazy danych (Postgres). Skrypt wstawia dane do tabeli `wlz_dupl`, ale są tam wszystkie rekordy, a nie same duplikaty.
 - `dbExportMw.js` -- skrypt do eksportu danych z bazy do tabel (do plików wiki).
+	Dopiero tutaj, przy pobieraniu danych, zostaną pobrane tylko duplikaty.  
+	Duplikaty są wyznaczane na podstawie danych zgrupowanych według obciętych współrzędnych (lat, lon) — czyli współrzędnych o zmniejszonej dokładności.  
+	Testowe zapytania do sprawdzania liczby duplikatów w zależności od wybranej dokładności (liczby miejsc po przecinku): `src\db\count.dupl.sql`
 - `wikiploy.mjs` -- skrypt do wrzucania plików wiki do Wikipedii (aktualizacja podstron).
 
 Skrypty pomocnicze:

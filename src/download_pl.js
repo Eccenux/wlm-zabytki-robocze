@@ -24,6 +24,11 @@ const boundaries = {
 	// 19.46331, 51.756575
 	// "southWest":{"lng":19.45, "lat":51.755},
 	// "northEast":{"lng":19.47, "lat":51.757},
+	// test pomorskie redir
+	// redir bug: https://phabricator.wikimedia.org/T393655
+	// 54.464840:17.035360
+	// "southWest":{"lng":17.02, "lat":54.45},
+	// "northEast":{"lng":17.04, "lat":54.47},
 }
 
 try {
