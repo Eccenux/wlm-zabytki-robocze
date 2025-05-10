@@ -1,6 +1,6 @@
 {
 	"name": "wlm-zabytki-robocze",
-	"version": "0.1.1",
+	"version": "1.0.0",
 	"description": "Robocze do konkursu WLM i WLZ, w tym do obliczeń odległości geograficznych",
 	"main": "index.js",
 	"type": "module",
@@ -21,7 +21,7 @@
 		"mocha": "10.x"
 	},
 	"dependencies": {
-		"pg-promise": "^11.5.4",
+		"pg-promise": "11.x",
 		"wikiploy": "2.x"
 	}
 }
