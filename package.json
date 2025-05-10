@@ -1,6 +1,6 @@
 {
 	"name": "wlm-zabytki-robocze",
-	"version": "1.0.0",
+	"version": "1.2.0",
 	"description": "Robocze do konkursu WLM i WLZ, w tym do obliczeń odległości geograficznych",
 	"main": "index.js",
 	"type": "module",
