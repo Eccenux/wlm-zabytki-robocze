@@ -93,6 +93,7 @@ path = './output/test/lon_mini.json';
 outpath = './output/test/lon_mini_clear.json';
 expectedCount = 8;
 
+// initial PoC
 var check = async function (path, expectedCount) {
 	let cutForDisplay = 15;
 	// Read and parse the JSON file into an array
@@ -115,6 +116,7 @@ var check = async function (path, expectedCount) {
 }
 // check(path, expectedCount);
 
+// cleaner class test
 check = async function (path, outpath, expectedCount) {
 	let data = JSON.parse(fs.readFileSync(path, 'utf8'));
 	if (!Array.isArray(data)) {

@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { promisify } from 'util';
+import { MonumentsCleaner } from './MonumentsCleaner.js';
 
 const readFileAsync = promisify(fs.readFile);
 
@@ -12,19 +13,34 @@ export default class FileProcessor {
 		const files = await this.readMatchingFiles(directoryPath);
 		let total = 0;
 		let skipped = 0;
+		let cleaner = new MonumentsCleaner();
 		for (const file of files) {
+			// raw / all
 			const items = await this.readJSONFromFile(directoryPath, file);
 			console.log(`${file}: ${items.length}`);
-			for (const item of items) {
+
+			// remove redirects and non-unique Q
+			const clean = await cleaner.cleanup(items);
+			if (items.length != clean.length) {
+				let tempSkip = items.length - clean.length;
+				console.log(`${file}: skipped with cleaner: ${tempSkip}`);
+				skipped += tempSkip;
+			}
+
+			// insert (might skip duoe to non-unique data)
+			let tempSkip = 0;
+			for (const item of clean) {
 				const result = await this.db.insert(item);
 				if (result === false) {
 					skipped++;
+					tempSkip++;
 				} else {
 					total++;
 				}
 			}
+			console.log(`${file}: skipped with db.insert: ${tempSkip}`);
 		}
-		console.log(`Total items: ${total}, skipped: ${skipped}; in files: ${files.length}.`);
+		console.log(`Total items in DB: ${total}, skipped: ${skipped}; in files: ${files.length}.`);
 	}
 
 	/** @private Read JSON files list. */
