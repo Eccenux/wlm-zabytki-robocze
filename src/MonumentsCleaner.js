@@ -7,13 +7,21 @@
 export class MonumentsCleaner {
 	batchSize = 50;
 	endpoint = 'https://www.wikidata.org/w/api.php';
+	allRemoved = [];
 
-	async cleanup(items) {
+	async cleanup(items, registerRemoved = false) {
 		// first just remove duplicates
 		let filteredItems = this.removeDuplicates(items);
 		// then get items that actually exist in WikiData
 		let allTitles = filteredItems.map(v=>v.item).filter(v=>typeof v === 'string');
 		let filteredTitles = (await this.getExistingTitles(allTitles));
+		if (registerRemoved) {
+			const removedItems = filteredItems.filter(v => !filteredTitles.includes(v.item));
+			if (removedItems.length) {
+				// console.log('Removed items (redirects?):', JSON.stringify(removedItems));
+				this.allRemoved.push(removedItems);
+			}
+		}
 		// then only keep items that exists
 		filteredItems = filteredItems.filter(v=>filteredTitles.includes(v.item));
 		return filteredItems;

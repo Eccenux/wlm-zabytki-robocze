@@ -17,6 +17,7 @@ try {
 
 	const files = new FileProcessor(db);
 	await files.processFiles(directoryPath);
+	// await files.processAndFindRedirs(directoryPath);
 
 } catch (error) {
 	console.error(error);
